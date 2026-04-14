@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Webtoon App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div>
+        <h1>Webtoon App</h1>
+        <p>Projet BTS SIO</p>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html" >Accueil</a>
+        <a href="login.html" >Connexion</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="search.html" >Recherche</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-section container">
+  <h2 class="page-title">Mon dashboard</h2>
+  <p class="page-subtitle">
+    Voici un aperçu simple de ta bibliothèque personnelle et de tes statuts de lecture.
+  </p>
+
+  <div class="grid-2">
+    <div class="box box-white">
+      <h3>Ma bibliothèque</h3>
+      <div class="table-like">
+        <div class="table-row">
+          <strong>Solo Leveling</strong>
+          <span>Terminé</span>
+          <span>179 chapitres</span>
+        </div>
+        <div class="table-row">
+          <strong>Tower of God</strong>
+          <span>En cours</span>
+          <span>620 chapitres</span>
+        </div>
+        <div class="table-row">
+          <strong>The Boxer</strong>
+          <span>À lire</span>
+          <span>123 chapitres</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <h3>Statuts de lecture</h3>
+      <p>Tu pourras plus tard relier ces statuts à ta base de données.</p>
+      <div class="status-list" id="status-list"></div>
+    </div>
+  </div>
+</main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>Webtoon App — maquette blanche et verte</p>
+      <p>Projet BTS SIO SLAM</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

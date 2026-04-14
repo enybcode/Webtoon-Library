@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Webtoon App</title>
+  <title>Accueil - Webtoon App</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -15,72 +15,85 @@
       </div>
 
       <nav class="nav">
-        <a href="#features">Fonctionnalités</a>
-        <a href="#library">Bibliothèque</a>
-        <a href="#contact">Contact</a>
+        <a href="index.html" class="active">Accueil</a>
+        <a href="login.html" >Connexion</a>
+        <a href="dashboard.html" >Dashboard</a>
+        <a href="search.html" >Recherche</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <section class="hero container">
-      <div class="hero-text">
-        <span class="badge">Gestion de webtoons</span>
-        <h2>Un site simple en blanc et vert pour suivre tes lectures.</h2>
+  <section class="hero container">
+    <div class="hero-text">
+      <span class="badge">Ta bibliothèque webtoon</span>
+      <h2>Retrouve, organise et suis tes webtoons préférés au même endroit.</h2>
+      <p>
+        Garde une vue claire sur toutes tes lectures, retrouve rapidement les titres que tu aimes
+        et profite d’un espace pensé pour te simplifier la vie.
+      </p>
+      <p>
+        Que tu lises un seul webtoon de temps en temps ou plusieurs séries en parallèle,
+        tout reste rangé, lisible et agréable à consulter.
+      </p>
+
+      <div class="hero-buttons">
+        <a class="btn btn-green" href="login.html">Connexion</a>
+        <a class="btn btn-white" href="dashboard.html">Découvrir</a>
+      </div>
+    </div>
+
+    <div class="library-preview">
+      <div class="library-card">
+        <div class="library-header">
+          <h3>Ma bibliothèque</h3>
+          <span>12 titres</span>
+        </div>
+
+        <div id="webtoon-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <div class="section-title">
+        <h3>Pourquoi utiliser Webtoon App ?</h3>
         <p>
-          Cette maquette pose la base de ton application web. Elle est propre,
-          lisible, et facile à faire évoluer ensuite avec une base de données,
-          l’API AniList, et un système de connexion.
+          Un espace simple, propre et agréable pour mieux profiter de tes lectures au quotidien.
         </p>
+      </div>
 
-        <div class="hero-buttons">
-          <button class="btn btn-green">Commencer</button>
-          <button class="btn btn-white">Voir le projet</button>
+      <div class="cards" id="feature-cards"></div>
+    </div>
+  </section>
+
+  <section class="page-section container">
+    <div class="grid-2">
+      <div class="box box-white">
+        <h3>Retrouve tes lectures</h3>
+        <p>
+          Ne perds plus de temps à chercher où tu en étais. Ton espace personnel t’aide à tout retrouver rapidement.
+        </p>
+        <div class="link-row">
+          <a href="search.html">Explorer les titres</a>
         </div>
       </div>
 
-      <div class="library-preview">
-        <div class="library-card">
-          <div class="library-header">
-            <h3>Ma bibliothèque</h3>
-            <span>12 titres</span>
-          </div>
-
-          <div id="webtoon-list"></div>
+      <div class="box box-green">
+        <h3>Profite d’un espace personnel</h3>
+        <p>
+          Connecte-toi pour accéder à une bibliothèque claire, suivre ta progression et garder tes favoris sous la main.
+        </p>
+        <div class="link-row">
+          <a href="login.html">Connexion</a>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
+</main>
 
-    <section id="features" class="features">
-      <div class="container">
-        <div class="section-title">
-          <h3>Fonctionnalités principales</h3>
-          <p>
-            Une base claire pour ensuite ajouter la connexion, la base de données et l’import AniList.
-          </p>
-        </div>
-
-        <div class="cards" id="feature-cards"></div>
-      </div>
-    </section>
-
-    <section id="library" class="library-section container">
-      <div class="search-box">
-        <h3>Recherche</h3>
-        <div class="search-form">
-          <input type="text" placeholder="Rechercher un webtoon..." />
-          <button class="btn btn-green">Chercher</button>
-        </div>
-      </div>
-
-      <div class="status-box">
-        <h3>Statuts de lecture</h3>
-        <div class="status-list" id="status-list"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer id="contact" class="footer">
+  <footer class="footer">
     <div class="container footer-content">
       <p>Webtoon App — maquette blanche et verte</p>
       <p>Projet BTS SIO SLAM</p>

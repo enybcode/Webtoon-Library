@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inscription - Webtoon App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div>
+        <h1>Webtoon App</h1>
+        <p>Projet BTS SIO</p>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html" >Accueil</a>
+        <a href="login.html" class="active">Connexion</a>
+        <a href="dashboard.html" >Dashboard</a>
+        <a href="search.html" >Recherche</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-section container">
+  <div class="form-card">
+    <h2>Inscription</h2>
+    <p>Crée ton compte pour commencer à gérer ta liste de webtoons.</p>
+
+    <form>
+      <div class="form-group">
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" placeholder="exemple@email.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="username">Pseudo</label>
+        <input type="text" id="username" placeholder="Ton pseudo" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="********" />
+      </div>
+
+      <button type="submit" class="btn btn-green">S'inscrire</button>
+    </form>
+
+    <p class="small-text">
+      Déjà inscrit ?
+      <a href="login.html">Connexion</a>
+    </p>
+  </div>
+</main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>Webtoon App — maquette blanche et verte</p>
+      <p>Projet BTS SIO SLAM</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

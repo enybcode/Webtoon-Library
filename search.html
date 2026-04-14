@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recherche - Webtoon App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div>
+        <h1>Webtoon App</h1>
+        <p>Projet BTS SIO</p>
+      </div>
+
+      <nav class="nav">
+        <a href="index.html" >Accueil</a>
+        <a href="login.html" >Connexion</a>
+        <a href="dashboard.html" >Dashboard</a>
+        <a href="search.html" class="active">Recherche</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-section container">
+  <h2 class="page-title">Recherche de webtoons</h2>
+  <p class="page-subtitle">
+    Retrouve rapidement un titre et ajoute-le ensuite à ta bibliothèque personnelle.
+  </p>
+
+  <div class="grid-2">
+    <div class="box box-white">
+      <h3>Rechercher</h3>
+      <div class="search-form">
+        <input type="text" placeholder="Rechercher un webtoon..." />
+        <button class="btn btn-green">Chercher</button>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <h3>Exemple de résultat</h3>
+      <div class="webtoon-item">
+        <div>
+          <h4>Solo Leveling</h4>
+          <p>Action, Fantasy</p>
+        </div>
+        <span class="webtoon-status">Ajouter</span>
+      </div>
+      <div class="webtoon-item">
+        <div>
+          <h4>Tower of God</h4>
+          <p>Adventure, Drama</p>
+        </div>
+        <span class="webtoon-status">Ajouter</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <p>Webtoon App — maquette blanche et verte</p>
+      <p>Projet BTS SIO SLAM</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
