@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webtoon App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div>
+        <h1>Webtoon App</h1>
+        <p>Projet BTS SIO</p>
+      </div>
+
+      <nav class="nav">
+        <a href="#features">Fonctionnalités</a>
+        <a href="#library">Bibliothèque</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <div class="hero-text">
+        <span class="badge">Gestion de webtoons</span>
+        <h2>Un site simple en blanc et vert pour suivre tes lectures.</h2>
+        <p>
+          Cette maquette pose la base de ton application web. Elle est propre,
+          lisible, et facile à faire évoluer ensuite avec une base de données,
+          l’API AniList, et un système de connexion.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="btn btn-green">Commencer</button>
+          <button class="btn btn-white">Voir le projet</button>
+        </div>
+      </div>
+
+      <div class="library-preview">
+        <div class="library-card">
+          <div class="library-header">
+            <h3>Ma bibliothèque</h3>
+            <span>12 titres</span>
+          </div>
+
+          <div id="webtoon-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="container">
+        <div class="section-title">
+          <h3>Fonctionnalités principales</h3>
+          <p>
+            Une base claire pour ensuite ajouter la connexion, la base de données et l’import AniList.
+          </p>
+        </div>
+
+        <div class="cards" id="feature-cards"></div>
+      </div>
+    </section>
+
+    <section id="library" class="library-section container">
+      <div class="search-box">
+        <h3>Recherche</h3>
+        <div class="search-form">
+          <input type="text" placeholder="Rechercher un webtoon..." />
+          <button class="btn btn-green">Chercher</button>
+        </div>
+      </div>
+
+      <div class="status-box">
+        <h3>Statuts de lecture</h3>
+        <div class="status-list" id="status-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contact" class="footer">
+    <div class="container footer-content">
+      <p>Webtoon App — maquette blanche et verte</p>
+      <p>Projet BTS SIO SLAM</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
