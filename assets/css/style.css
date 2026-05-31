@@ -1,0 +1,562 @@
+/* =============================================
+   style.css — Feuille de style principale
+   Palette : blanc et vert
+   ============================================= */
+
+/* ===== VARIABLES DE COULEURS ===== */
+:root {
+    --vert-principal: #2ecc71;
+    --vert-fonce:     #27ae60;
+    --vert-clair:     #eafaf1;
+    --blanc:          #ffffff;
+    --gris-clair:     #f5f6fa;
+    --gris-texte:     #555555;
+    --noir:           #222222;
+    --rouge:          #e74c3c;
+    --ombre:          0 2px 12px rgba(0,0,0,0.08);
+    --rayon:          10px;
+}
+
+/* ===== RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--gris-clair);
+    color: var(--noir);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: var(--vert-fonce);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ===== BARRE DE NAVIGATION ===== */
+.navbar {
+    background-color: var(--blanc);
+    box-shadow: var(--ombre);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 65px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-logo {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--vert-fonce);
+    text-decoration: none;
+}
+
+.navbar-liens {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navbar-liens a {
+    color: var(--gris-texte);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.navbar-liens a:hover {
+    color: var(--vert-principal);
+    text-decoration: none;
+}
+
+/* Bouton dans la nav */
+.btn-nav {
+    background-color: var(--vert-principal);
+    color: var(--blanc) !important;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-weight: 700 !important;
+}
+
+.btn-nav:hover {
+    background-color: var(--vert-fonce);
+}
+
+.btn-rouge {
+    background-color: var(--rouge) !important;
+}
+
+.btn-rouge:hover {
+    background-color: #c0392b !important;
+}
+
+/* ===== CONTENU PRINCIPAL ===== */
+.contenu-principal {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    background-color: var(--blanc);
+    text-align: center;
+    padding: 1rem;
+    color: var(--gris-texte);
+    font-size: 0.85rem;
+    border-top: 1px solid #eee;
+    margin-top: auto;
+}
+
+/* ===== MESSAGES D'ALERTE ===== */
+.alerte {
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--rayon);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.alerte-erreur {
+    background-color: #fdecea;
+    color: var(--rouge);
+    border-left: 4px solid var(--rouge);
+}
+
+.alerte-succes {
+    background-color: var(--vert-clair);
+    color: var(--vert-fonce);
+    border-left: 4px solid var(--vert-principal);
+}
+
+/* ===== FORMULAIRES ===== */
+.carte-formulaire {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 2rem;
+    max-width: 480px;
+    margin: 2rem auto;
+}
+
+.carte-formulaire h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    color: var(--vert-fonce);
+}
+
+.groupe-champ {
+    margin-bottom: 1.2rem;
+}
+
+.groupe-champ label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--gris-texte);
+}
+
+.groupe-champ input,
+.groupe-champ select,
+.groupe-champ textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: var(--rayon);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    background-color: var(--blanc);
+}
+
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus {
+    outline: none;
+    border-color: var(--vert-principal);
+}
+
+.groupe-champ textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* ===== BOUTONS ===== */
+.btn {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    border-radius: 25px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+.btn-vert {
+    background-color: var(--vert-principal);
+    color: var(--blanc);
+}
+
+.btn-vert:hover {
+    background-color: var(--vert-fonce);
+    color: var(--blanc);
+}
+
+.btn-rouge-plein {
+    background-color: var(--rouge);
+    color: var(--blanc);
+}
+
+.btn-rouge-plein:hover {
+    background-color: #c0392b;
+    color: var(--blanc);
+}
+
+.btn-gris {
+    background-color: #bdc3c7;
+    color: var(--blanc);
+}
+
+.btn-gris:hover {
+    background-color: #95a5a6;
+    color: var(--blanc);
+}
+
+.btn-bloc {
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+
+/* ===== LIEN SOUS FORMULAIRE ===== */
+.lien-formulaire {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: var(--gris-texte);
+}
+
+/* ===== PAGE D'ACCUEIL ===== */
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--vert-clair) 0%, var(--blanc) 100%);
+    border-radius: var(--rayon);
+    margin-bottom: 3rem;
+}
+
+.hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    color: var(--vert-fonce);
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: var(--gris-texte);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+}
+
+.hero-boutons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Cartes fonctionnalités */
+.grille-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.carte-feature {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 2rem;
+    text-align: center;
+}
+
+.carte-feature .icone {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.carte-feature h3 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--vert-fonce);
+    margin-bottom: 0.5rem;
+}
+
+.carte-feature p {
+    color: var(--gris-texte);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ===== DASHBOARD ===== */
+.page-titre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    color: var(--vert-fonce);
+    margin-bottom: 1.5rem;
+}
+
+.grille-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.carte-stat {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 1.5rem;
+    text-align: center;
+    border-top: 4px solid var(--vert-principal);
+}
+
+.carte-stat .stat-nombre {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--vert-principal);
+}
+
+.carte-stat .stat-label {
+    color: var(--gris-texte);
+    font-size: 0.85rem;
+    margin-top: 0.3rem;
+}
+
+/* ===== LISTE DES WEBTOONS ===== */
+.grille-webtoons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.carte-webtoon {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carte-webtoon:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.carte-webtoon-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    background-color: var(--vert-clair);
+}
+
+.carte-webtoon-image-placeholder {
+    width: 100%;
+    height: 220px;
+    background: linear-gradient(135deg, var(--vert-clair), #d5f5e3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.carte-webtoon-corps {
+    padding: 1rem;
+}
+
+.carte-webtoon-titre {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+    color: var(--noir);
+}
+
+.carte-webtoon-auteur {
+    font-size: 0.8rem;
+    color: var(--gris-texte);
+    margin-bottom: 0.5rem;
+}
+
+/* Badge de statut */
+.badge-statut {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.badge-a_lire    { background-color: #eaf4ff; color: #2980b9; }
+.badge-en_cours  { background-color: #fff8e1; color: #f39c12; }
+.badge-termine   { background-color: var(--vert-clair); color: var(--vert-fonce); }
+
+.carte-webtoon-note {
+    font-size: 0.85rem;
+    color: #f39c12;
+    font-weight: 700;
+}
+
+.carte-webtoon-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem;
+    border-top: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+}
+
+.carte-webtoon-actions a {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border-radius: 15px;
+    transition: background-color 0.2s;
+}
+
+.btn-modifier {
+    background-color: #eaf4ff;
+    color: #2980b9;
+}
+
+.btn-modifier:hover {
+    background-color: #2980b9;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-supprimer {
+    background-color: #fdecea;
+    color: var(--rouge);
+}
+
+.btn-supprimer:hover {
+    background-color: var(--rouge);
+    color: white;
+    text-decoration: none;
+}
+
+/* ===== PAGE VIDE ===== */
+.message-vide {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gris-texte);
+}
+
+.message-vide .icone-vide {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* ===== EN-TÊTE DE PAGE ===== */
+.entete-page {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* ===== FILTRES ===== */
+.barre-filtres {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filtre-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    border: 2px solid #e0e0e0;
+    background-color: var(--blanc);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gris-texte);
+}
+
+.filtre-btn:hover,
+.filtre-btn.actif {
+    border-color: var(--vert-principal);
+    background-color: var(--vert-principal);
+    color: var(--blanc);
+}
+
+/* ===== FORMULAIRE WEBTOON (large) ===== */
+.carte-formulaire-large {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.carte-formulaire-large h1 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--vert-fonce);
+    margin-bottom: 1.5rem;
+}
+
+.grille-2-colonnes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.5rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .navbar { padding: 0 1rem; }
+    .navbar-logo { font-size: 1.1rem; }
+    .hero h1 { font-size: 1.8rem; }
+    .contenu-principal { padding: 1rem; }
+    .grille-2-colonnes { grid-template-columns: 1fr; }
+    .grille-webtoons { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
