@@ -31,6 +31,11 @@ $labelsStatut = [
 
 $titre_page = "Ma liste";
 include 'includes/header.php';
+
+// Affichage des messages de confirmation (après redirection)
+if (isset($_GET['ajout']))    echo '<div class="alerte alerte-succes">✅ Webtoon ajouté avec succès !</div>';
+if (isset($_GET['modif']))    echo '<div class="alerte alerte-succes">✅ Webtoon modifié avec succès !</div>';
+if (isset($_GET['supprime'])) echo '<div class="alerte alerte-succes">🗑️ Webtoon supprimé.</div>';
 ?>
 
 <!-- ===== EN-TÊTE ===== -->

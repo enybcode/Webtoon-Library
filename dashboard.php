@@ -16,27 +16,23 @@ if (!isset($_SESSION['user_id'])) {
 // On récupère l'ID de l'utilisateur connecté depuis la session
 $userId = $_SESSION['user_id'];
 
-// ===== RÉCUPÉRATION DES STATISTIQUES =====
+// ===== RÉCUPÉRATION DES STATISTIQUES EN UNE SEULE REQUÊTE =====
+// On utilise GROUP BY + COUNT pour éviter 4 requêtes séparées
+$reqStats = $pdo->prepare(
+    "SELECT statut, COUNT(*) AS nb FROM webtoons WHERE id_utilisateur = ? GROUP BY statut"
+);
+$reqStats->execute([$userId]);
 
-// Nombre total de webtoons de l'utilisateur
-$reqTotal = $pdo->prepare("SELECT COUNT(*) AS total FROM webtoons WHERE id_utilisateur = ?");
-$reqTotal->execute([$userId]);
-$total = $reqTotal->fetch()['total'];
+// On initialise les compteurs à 0
+$total = 0; $enCours = 0; $termines = 0; $aLire = 0;
 
-// Nombre de webtoons "en cours"
-$reqEnCours = $pdo->prepare("SELECT COUNT(*) AS nb FROM webtoons WHERE id_utilisateur = ? AND statut = 'en_cours'");
-$reqEnCours->execute([$userId]);
-$enCours = $reqEnCours->fetch()['nb'];
-
-// Nombre de webtoons "terminés"
-$reqTermine = $pdo->prepare("SELECT COUNT(*) AS nb FROM webtoons WHERE id_utilisateur = ? AND statut = 'termine'");
-$reqTermine->execute([$userId]);
-$termines = $reqTermine->fetch()['nb'];
-
-// Nombre de webtoons "à lire"
-$reqALire = $pdo->prepare("SELECT COUNT(*) AS nb FROM webtoons WHERE id_utilisateur = ? AND statut = 'a_lire'");
-$reqALire->execute([$userId]);
-$aLire = $reqALire->fetch()['nb'];
+// On remplit les compteurs selon les résultats
+foreach ($reqStats->fetchAll() as $ligne) {
+    $total += $ligne['nb'];
+    if ($ligne['statut'] === 'en_cours') $enCours  = $ligne['nb'];
+    if ($ligne['statut'] === 'termine')  $termines = $ligne['nb'];
+    if ($ligne['statut'] === 'a_lire')   $aLire    = $ligne['nb'];
+}
 
 // ===== RÉCUPÉRATION DES DERNIERS WEBTOONS =====
 // On affiche les 4 derniers webtoons ajoutés

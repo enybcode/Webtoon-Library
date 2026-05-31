@@ -3,9 +3,10 @@
 
 <!-- ===== PIED DE PAGE ===== -->
 <footer class="footer">
-    <p>© <?= date('Y') ?> WebtoonLib — Projet BTS SIO SLAM</p>
+    <p>© <?= date('Y') ?> Webtoon-Library — Projet BTS SIO SLAM</p>
 </footer>
 
-<script src="/webtoon-app/assets/js/script.js"></script>
+<!-- $base est défini dans header.php, disponible ici car même scope PHP -->
+<script src="<?= $base ?>/assets/js/script.js"></script>
 </body>
 </html>

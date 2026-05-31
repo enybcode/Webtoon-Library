@@ -43,9 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auteur   = trim($_POST['auteur'] ?? '');
     $genre    = trim($_POST['genre'] ?? '');
     $desc     = trim($_POST['description'] ?? '');
-    $statut   = $_POST['statut'] ?? 'a_lire';
+    // On valide que le statut est bien une des 3 valeurs autorisées
+    $statutsValides = ['a_lire', 'en_cours', 'termine'];
+    $statut   = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
     $chapitre = (int)($_POST['chapitre_actuel'] ?? 0);
-    $note     = $_POST['note'] !== '' ? (int)$_POST['note'] : null;
+    $note     = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
+    // Sécurité : on s'assure que la note est bien entre 0 et 10
+    if ($note !== null && ($note < 0 || $note > 10)) $note = null;
     $imageUrl = trim($_POST['image_url'] ?? '');
 
     if (empty($titre)) {
@@ -69,8 +73,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Si erreur, on garde les nouvelles valeurs pour le formulaire
-    $wt = array_merge($wt, $_POST);
+    // Si erreur, on remet uniquement les champs du formulaire dans $wt
+    // (on ne fait PAS array_merge($wt, $_POST) pour éviter d'écraser des champs système)
+    $wt['titre']           = $titre;
+    $wt['auteur']          = $auteur;
+    $wt['genre']           = $genre;
+    $wt['description']     = $desc;
+    $wt['statut']          = $statut;
+    $wt['chapitre_actuel'] = $chapitre;
+    $wt['note']            = $note;
+    $wt['image_url']       = $imageUrl;
 }
 
 $titre_page = "Modifier un webtoon";
@@ -85,6 +97,8 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="modifier_webtoon.php?id=<?= $id ?>">
+        <!-- Sécurité : on passe aussi l'id en champ caché au cas où l'URL serait modifiée -->
+        <input type="hidden" name="id" value="<?= $id ?>">
 
         <div class="groupe-champ">
             <label for="titre">Titre <span style="color:red">*</span></label>

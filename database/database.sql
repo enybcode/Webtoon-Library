@@ -1,13 +1,24 @@
 -- =============================================
--- BASE DE DONNÉES : webtoon_app
+-- BASE DE DONNÉES : webtoon_library
 -- Projet BTS SIO SLAM - Gestion de Webtoons
 -- =============================================
 
+-- ⚠️  IMPORTANT : le nom de la base de données doit correspondre
+--     exactement au nom de ton dossier dans htdocs/.
+--
+--     Exemples :
+--       Dossier htdocs/webtoon_library  → remplace webtoon_library ci-dessous par webtoon_library
+--       Dossier htdocs/Webtoon-Library  → remplace webtoon_library ci-dessous par Webtoon-Library
+--       Dossier htdocs/mon-projet       → remplace webtoon_library ci-dessous par mon-projet
+--
+--     Dans phpMyAdmin : importe ce fichier APRÈS avoir créé la base avec le bon nom,
+--     OU modifie les deux lignes CREATE DATABASE et USE juste en dessous.
+
 -- On crée la base de données si elle n'existe pas
-CREATE DATABASE IF NOT EXISTS webtoon_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS webtoon_library CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- On sélectionne la base de données
-USE webtoon_app;
+USE webtoon_library;
 
 -- =============================================
 -- TABLE : utilisateurs

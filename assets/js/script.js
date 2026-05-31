@@ -22,8 +22,9 @@ function filtrerWebtoons(statut) {
 
     cartes.forEach(function(carte) {
         // Si le filtre est "tous" ou si la carte correspond au statut, on l'affiche
+        // On utilise '' (vide) et non 'block' pour laisser la CSS grid gérer l'affichage
         if (statut === 'tous' || carte.dataset.statut === statut) {
-            carte.style.display = 'block';
+            carte.style.display = '';
         } else {
             carte.style.display = 'none';
         }

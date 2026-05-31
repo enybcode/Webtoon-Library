@@ -23,9 +23,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $auteur    = trim($_POST['auteur'] ?? '');
     $genre     = trim($_POST['genre'] ?? '');
     $desc      = trim($_POST['description'] ?? '');
-    $statut    = $_POST['statut'] ?? 'a_lire';
+    // On valide que le statut est bien une des 3 valeurs autorisées
+    $statutsValides = ['a_lire', 'en_cours', 'termine'];
+    $statut = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
     $chapitre  = (int)($_POST['chapitre_actuel'] ?? 0);
-    $note      = $_POST['note'] !== '' ? (int)$_POST['note'] : null;
+    $note      = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
+    // Sécurité : on s'assure que la note est bien entre 0 et 10
+    if ($note !== null && ($note < 0 || $note > 10)) $note = null;
     $imageUrl  = trim($_POST['image_url'] ?? '');
 
     // Vérification : le titre est obligatoire

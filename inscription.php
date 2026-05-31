@@ -3,8 +3,8 @@
 // inscription.php — Page d'inscription
 // =============================================
 
+session_start();            // DOIT être en premier, avant tout include
 include 'includes/config.php'; // Connexion BDD
-session_start();
 
 // Si l'utilisateur est déjà connecté, on le redirige
 if (isset($_SESSION['user_id'])) {
@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erreur = "L'adresse email n'est pas valide.";
+
+    } elseif (strlen($pseudo) < 3 || strlen($pseudo) > 50) {
+        $erreur = "Le pseudo doit contenir entre 3 et 50 caractères.";
 
     } elseif (strlen($password) < 6) {
         $erreur = "Le mot de passe doit contenir au moins 6 caractères.";

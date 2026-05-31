@@ -3,8 +3,8 @@
 // connexion.php — Page de connexion
 // =============================================
 
+session_start();            // DOIT être en premier, avant tout include
 include 'includes/config.php';
-session_start();
 
 // Si l'utilisateur est déjà connecté, on le redirige
 if (isset($_SESSION['user_id'])) {

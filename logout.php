@@ -5,7 +5,10 @@
 
 session_start();
 
-// On détruit toute la session (supprime toutes les données de session)
+// On vide toutes les variables de session
+session_unset();
+
+// On détruit la session complètement
 session_destroy();
 
 // On redirige vers la page d'accueil
