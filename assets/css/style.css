@@ -258,6 +258,13 @@ img {
     text-align: center;
 }
 
+.btn-desactive,
+.btn-desactive:hover {
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.8;
+}
+
 /* ===== LIEN SOUS FORMULAIRE ===== */
 .lien-formulaire {
     text-align: center;
@@ -441,6 +448,13 @@ img {
     font-weight: 700;
 }
 
+.carte-webtoon-description {
+    color: var(--gris-texte);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 0.6rem;
+}
+
 .carte-webtoon-actions {
     display: flex;
     gap: 0.5rem;
@@ -529,6 +543,213 @@ img {
     color: var(--blanc);
 }
 
+/* ===== RECHERCHE ===== */
+.bloc-recherche {
+    background-color: var(--blanc);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 1.6rem;
+    margin: 0 auto 2rem;
+    max-width: 900px;
+}
+
+.entete-recherche {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.entete-recherche .page-titre {
+    margin-bottom: 0;
+}
+
+.btn-filtres {
+    background-color: var(--vert-clair);
+    color: var(--vert-fonce);
+    border: 2px solid #d5f5e3;
+    border-radius: 999px;
+    padding: 0.65rem 1.3rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn-filtres:hover {
+    background-color: var(--vert-principal);
+    border-color: var(--vert-principal);
+    color: var(--blanc);
+    transform: translateY(-1px);
+}
+
+.search-form-anilist {
+    width: 100%;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 780px;
+    min-height: 62px;
+    margin: 0 auto;
+    padding: 0.35rem 0.45rem 0.35rem 1.2rem;
+    background-color: var(--blanc);
+    border: 2px solid #dfeee6;
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.search-icon {
+    color: var(--vert-fonce);
+    font-size: 1.25rem;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+
+.search-input-modern {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    min-width: 0;
+    height: 52px;
+    padding: 0 0.4rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--noir);
+}
+
+.search-input-modern::placeholder {
+    color: #87968d;
+    font-weight: 600;
+}
+
+.search-bar:focus-within {
+    border-color: var(--vert-principal);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 0 0 4px rgba(46, 204, 113, 0.16);
+}
+
+.search-button-modern {
+    min-height: 52px;
+    padding: 0 1.7rem;
+    border: none;
+    border-radius: 999px;
+    background-color: var(--vert-principal);
+    color: var(--blanc);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.search-button-modern:hover {
+    background-color: var(--vert-fonce);
+    transform: translateY(-1px);
+}
+
+.search-reset {
+    min-height: 56px;
+    border-radius: 999px;
+    padding: 0 1.7rem;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.98rem;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.search-reset {
+    background-color: #bdc3c7;
+    color: var(--blanc);
+}
+
+.search-reset:hover {
+    background-color: #95a5a6;
+    color: var(--blanc);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.zone-filtres {
+    display: none;
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+    gap: 1rem;
+    align-items: end;
+    max-width: 780px;
+    margin: 1.2rem auto 0;
+    padding: 1rem;
+    background-color: #fbfffd;
+    border: 2px solid #dfeee6;
+    border-radius: var(--rayon);
+}
+
+.zone-filtres.ouverte {
+    display: grid;
+}
+
+.groupe-filtre label {
+    display: block;
+    color: var(--gris-texte);
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+}
+
+.groupe-filtre select {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid #dfeee6;
+    border-radius: var(--rayon);
+    background-color: var(--blanc);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: var(--gris-texte);
+}
+
+.filtre-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gris-texte);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.filtre-checkbox input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--vert-principal);
+}
+
+.btn-appliquer-filtres {
+    background-color: var(--vert-principal);
+    color: var(--blanc);
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.2rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-appliquer-filtres:hover {
+    background-color: var(--vert-fonce);
+}
+
 /* ===== FORMULAIRE WEBTOON (large) ===== */
 .carte-formulaire-large {
     background-color: var(--blanc);
@@ -559,4 +780,1153 @@ img {
     .contenu-principal { padding: 1rem; }
     .grille-2-colonnes { grid-template-columns: 1fr; }
     .grille-webtoons { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .bloc-recherche { padding: 1.2rem; }
+    .entete-recherche {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .search-bar {
+        align-items: stretch;
+        flex-direction: column;
+        max-width: 100%;
+        border-radius: var(--rayon);
+        padding: 1rem;
+    }
+    .search-icon {
+        display: none;
+    }
+    .search-input-modern {
+        width: 100%;
+        height: 50px;
+        padding: 0 1rem;
+        border: 2px solid #dfeee6;
+        border-radius: 999px;
+        background-color: #fbfffd;
+    }
+    .search-button-modern,
+    .search-reset {
+        width: 100%;
+    }
+    .zone-filtres,
+    .zone-filtres.ouverte {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+}
+
+/* =============================================
+   THEME SOMBRE WEBTOON / MANHWA
+   ============================================= */
+:root {
+    --vert-principal: #22f078;
+    --vert-fonce:     #16c866;
+    --vert-clair:     #143823;
+    --blanc:          #151a22;
+    --gris-clair:     #080b10;
+    --gris-texte:     #a7b0bd;
+    --noir:           #f4f7fb;
+    --rouge:          #ff5d5d;
+    --surface:        #111720;
+    --surface-2:      #18212c;
+    --surface-3:      #202b38;
+    --ligne:          #263442;
+    --texte-fort:     #f5f8fb;
+    --texte-doux:     #aab5c3;
+    --ombre:          0 18px 45px rgba(0,0,0,0.38);
+    --rayon:          14px;
+}
+
+body {
+    background:
+        radial-gradient(circle at top left, rgba(34,240,120,0.12), transparent 28rem),
+        linear-gradient(180deg, #0b1017 0%, #070a0f 100%);
+    color: var(--texte-fort);
+}
+
+a {
+    color: var(--vert-principal);
+}
+
+.navbar {
+    height: 72px;
+    background: rgba(11, 16, 23, 0.92);
+    border-bottom: 1px solid rgba(34,240,120,0.14);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.35);
+    backdrop-filter: blur(14px);
+}
+
+.navbar-logo {
+    color: var(--vert-principal);
+    letter-spacing: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.logo-icone {
+    width: 36px;
+    height: 36px;
+}
+
+.btn-parametres {
+    width: 42px;
+    height: 42px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(34,240,120,0.28);
+    background-color: rgba(34,240,120,0.1);
+    border-radius: 999px;
+}
+
+.btn-parametres img {
+    width: 22px;
+    height: 22px;
+}
+
+.btn-parametres:hover {
+    background-color: rgba(34,240,120,0.18) !important;
+}
+
+.navbar-liens {
+    gap: 1rem;
+}
+
+.navbar-liens a {
+    color: #d6dde7;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+}
+
+.navbar-liens a:hover {
+    color: var(--vert-principal);
+    background-color: rgba(34,240,120,0.09);
+}
+
+.btn-nav {
+    background: linear-gradient(135deg, var(--vert-principal), var(--vert-fonce));
+    color: #07100b !important;
+    box-shadow: 0 10px 24px rgba(34,240,120,0.22);
+}
+
+.btn-rouge {
+    background: rgba(255,93,93,0.15) !important;
+    color: #ff8c8c !important;
+    border: 1px solid rgba(255,93,93,0.35);
+    box-shadow: none;
+}
+
+.btn-rouge:hover {
+    background: rgba(255,93,93,0.26) !important;
+}
+
+.contenu-principal {
+    max-width: 1180px;
+    padding: 2.2rem;
+}
+
+.footer {
+    background-color: #0b1017;
+    border-top: 1px solid var(--ligne);
+    color: var(--texte-doux);
+}
+
+.hero,
+.bloc-recherche,
+.carte-formulaire,
+.carte-formulaire-large,
+.carte-feature,
+.carte-stat,
+.carte-webtoon {
+    background: linear-gradient(180deg, rgba(24,33,44,0.98), rgba(15,21,29,0.98));
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: var(--ombre);
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 4.5rem 2rem;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(120deg, rgba(34,240,120,0.18), transparent 45%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 90px);
+    pointer-events: none;
+}
+
+.hero > * {
+    position: relative;
+}
+
+.hero h1,
+.page-titre,
+.carte-formulaire h1,
+.carte-formulaire-large h1,
+.carte-feature h3,
+.carte-webtoon-titre,
+.contenu-principal h2 {
+    color: var(--texte-fort) !important;
+}
+
+.hero p,
+.carte-feature p,
+.carte-stat .stat-label,
+.carte-webtoon-auteur,
+.carte-webtoon-description,
+.lien-formulaire,
+.message-vide,
+.groupe-champ label {
+    color: var(--texte-doux);
+}
+
+.carte-feature .icone,
+.message-vide .icone-vide {
+    filter: drop-shadow(0 0 12px rgba(34,240,120,0.22));
+}
+
+.icone-svg,
+.icone-vide-svg {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 1rem;
+    filter: drop-shadow(0 0 12px rgba(34,240,120,0.22));
+}
+
+.icone-vide-svg {
+    width: 76px;
+    height: 76px;
+}
+
+.placeholder-icon {
+    width: 58px;
+    height: 58px;
+    opacity: 0.9;
+}
+
+.action-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: -3px;
+    margin-right: 0.25rem;
+}
+
+.btn .action-icon {
+    margin-right: 0.35rem;
+}
+
+.search-icon img {
+    width: 23px;
+    height: 23px;
+    display: block;
+}
+
+.section-titre {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 1.5rem;
+    color: var(--texte-fort);
+}
+
+.section-titre-gauche {
+    font-family: 'Poppins', sans-serif;
+    color: var(--texte-fort);
+}
+
+.lien-action {
+    font-weight: 800;
+    color: var(--vert-principal);
+}
+
+.btn-espace-haut {
+    margin-top: 1rem;
+    display: inline-block;
+}
+
+.carte-webtoon-meta {
+    font-size: 0.8rem;
+    color: var(--texte-doux);
+    margin-top: 0.3rem;
+}
+
+.details-webtoon {
+    display: none;
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 1px solid var(--ligne);
+    background-color: rgba(8,11,16,0.42);
+}
+
+.details-webtoon.ouvert {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+}
+
+.details-webtoon-media img {
+    width: 96px;
+    height: 136px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.details-webtoon-contenu h3 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--texte-fort);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.details-webtoon-contenu p {
+    color: var(--texte-doux);
+    font-size: 0.86rem;
+    line-height: 1.45;
+    margin-bottom: 0.45rem;
+}
+
+.details-webtoon-contenu strong {
+    color: var(--texte-fort);
+}
+
+.details-actions {
+    margin-top: 0.8rem;
+}
+
+/* ===== CARTES ANILIST UNIFORMES ===== */
+.grille-webtoons,
+.grille-tendance {
+    align-items: stretch;
+}
+
+.carte-webtoon {
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+}
+
+.carte-webtoon-image,
+.carte-webtoon-image-placeholder {
+    height: 235px;
+    flex: 0 0 235px;
+}
+
+.carte-webtoon-corps {
+    min-height: 116px;
+    padding: 0.9rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.carte-webtoon-titre {
+    min-height: 2.8em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.35;
+}
+
+.carte-webtoon-auteur {
+    min-height: 2.9em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+.carte-webtoon-actions {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    padding: 0.75rem 0.9rem;
+}
+
+.carte-webtoon-actions form {
+    width: 100%;
+}
+
+.btn-carte {
+    width: 100%;
+    min-height: 34px;
+    padding: 0.45rem 0.65rem;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    box-shadow: none;
+}
+
+/* ===== PAGE DETAIL WEBTOON ===== */
+.detail-hero {
+    position: relative;
+    min-height: 310px;
+    margin: -1.4rem -1.4rem 0;
+    background-position: center;
+    background-size: cover;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.detail-hero.sans-banniere {
+    background: linear-gradient(135deg, #0b1018 0%, #102318 55%, #07090d 100%);
+}
+
+.detail-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(6,8,12,0.15) 0%, rgba(6,8,12,0.78) 70%, #080b10 100%);
+}
+
+.detail-layout {
+    position: relative;
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    gap: 1.5rem;
+    max-width: 1180px;
+    margin: -130px auto 0;
+    align-items: start;
+}
+
+.detail-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-cover {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 28px 60px rgba(0,0,0,0.5);
+    background-color: #101720;
+}
+
+.detail-cover-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #111923, #12321f);
+}
+
+.detail-cover-placeholder img {
+    width: 76px;
+    opacity: 0.85;
+}
+
+.detail-actions {
+    display: grid;
+    gap: 0.65rem;
+}
+
+.detail-actions form,
+.detail-actions .btn {
+    width: 100%;
+}
+
+.detail-info-card,
+.detail-section {
+    background: rgba(13,19,27,0.92);
+    border: 1px solid var(--ligne);
+    border-radius: 16px;
+    box-shadow: 0 18px 42px rgba(0,0,0,0.24);
+}
+
+.detail-info-card {
+    padding: 1rem;
+}
+
+.detail-info-card h2,
+.detail-section h2 {
+    margin: 0 0 0.9rem;
+    color: var(--texte-fort);
+    font-size: 1.05rem;
+}
+
+.detail-info-card dl {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+}
+
+.detail-info-card dl div {
+    display: grid;
+    gap: 0.18rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.detail-info-card dl div:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-info-card dt {
+    color: var(--texte-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.detail-info-card dd {
+    margin: 0;
+    color: var(--texte-fort);
+    font-weight: 700;
+}
+
+.detail-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-title-zone {
+    min-height: 120px;
+    padding: 0.35rem 0 0.5rem;
+}
+
+.detail-title-zone h1 {
+    max-width: 900px;
+    margin: 0.35rem 0 0.45rem;
+    color: var(--texte-fort);
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(2rem, 4vw, 3.35rem);
+    line-height: 1.06;
+}
+
+.detail-title-zone p {
+    margin: 0;
+    color: var(--texte-doux);
+    font-weight: 700;
+}
+
+.lien-retour {
+    color: var(--vert-principal);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.lien-retour:hover {
+    text-decoration: underline;
+}
+
+.detail-section {
+    padding: 1.15rem;
+}
+
+.detail-section p {
+    margin: 0;
+    color: var(--texte-doux);
+    line-height: 1.75;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.detail-info-grid div {
+    min-height: 74px;
+    padding: 0.85rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    background-color: rgba(255,255,255,0.03);
+}
+
+.detail-info-grid strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--texte-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.detail-info-grid span {
+    color: var(--texte-fort);
+    font-weight: 800;
+}
+
+.detail-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 0.75rem;
+}
+
+.detail-mini-card {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr);
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 72px;
+    padding: 0.55rem;
+    color: var(--texte-fort);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    background-color: rgba(255,255,255,0.03);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.detail-mini-card:hover {
+    border-color: rgba(34,240,120,0.35);
+    transform: translateY(-2px);
+}
+
+.detail-mini-card img,
+.detail-mini-placeholder {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    object-fit: cover;
+    background-color: #111923;
+}
+
+.detail-mini-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--vert-principal);
+    font-weight: 900;
+}
+
+.detail-mini-card span {
+    min-width: 0;
+    color: var(--texte-fort);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+@media (max-width: 850px) {
+    .detail-hero {
+        min-height: 230px;
+        margin: -1rem -1rem 0;
+    }
+
+    .detail-layout {
+        grid-template-columns: 1fr;
+        margin-top: -90px;
+        gap: 1rem;
+    }
+
+    .detail-sidebar {
+        max-width: 330px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .detail-title-zone {
+        min-height: auto;
+        padding-top: 0;
+    }
+
+    .detail-title-zone h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .detail-layout {
+        margin-top: -70px;
+    }
+
+    .detail-mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.details-actions .btn-carte {
+    width: auto;
+    min-width: 120px;
+}
+
+.details-webtoon {
+    min-height: 0;
+}
+
+.section-tendance {
+    margin-bottom: 2.4rem;
+}
+
+.barre-categories-tendance {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-bottom: 1.6rem;
+    padding: 1rem;
+    background: linear-gradient(180deg, rgba(24,33,44,0.98), rgba(15,21,29,0.98));
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.texte-page {
+    margin: 0.35rem 0 0;
+    color: var(--texte-doux);
+    font-weight: 700;
+}
+
+.bloc-section-tendance {
+    padding: 1.15rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(18,25,34,0.92), rgba(10,14,20,0.92));
+    box-shadow: 0 18px 42px rgba(0,0,0,0.25);
+}
+
+.btn-categorie-tendance {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--ligne);
+    background-color: var(--surface);
+    color: var(--texte-doux);
+    font-weight: 800;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.1s;
+}
+
+.btn-categorie-tendance:hover,
+.btn-categorie-tendance.actif {
+    background-color: rgba(34,240,120,0.16);
+    border-color: var(--vert-principal);
+    color: var(--vert-principal);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.entete-section-tendance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid rgba(34,240,120,0.18);
+}
+
+.entete-section-tendance h2 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--texte-fort);
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.entete-section-tendance p {
+    margin: 0.3rem 0 0;
+    color: var(--texte-doux);
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+.badge-section-tendance {
+    flex: 0 0 auto;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgba(34,240,120,0.28);
+    border-radius: 999px;
+    background-color: rgba(34,240,120,0.1);
+    color: var(--vert-principal);
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.zone-voir-plus {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.35rem;
+}
+
+.btn-voir-plus {
+    min-width: 230px;
+    justify-content: center;
+}
+
+.grille-tendance {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.message-vide-compact {
+    padding: 1.5rem;
+}
+
+.message-vide-compact .icone-vide-svg {
+    width: 48px;
+    height: 48px;
+}
+
+.grille-parametres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.carte-parametres {
+    background: linear-gradient(180deg, rgba(24,33,44,0.98), rgba(15,21,29,0.98));
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 1.6rem;
+}
+
+.carte-parametres h2 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--texte-fort);
+    margin-bottom: 0.8rem;
+}
+
+.carte-parametres p {
+    color: var(--texte-doux);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.form-parametres {
+    display: grid;
+    gap: 1rem;
+}
+
+.toggle-ligne {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    color: var(--texte-fort);
+}
+
+.toggle-ligne input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.2rem;
+    accent-color: var(--vert-principal);
+}
+
+.toggle-ligne small {
+    display: block;
+    color: var(--texte-doux);
+    margin-top: 0.2rem;
+}
+
+.carte-stat {
+    border-top: 1px solid rgba(34,240,120,0.5);
+}
+
+.carte-stat .stat-nombre,
+.carte-webtoon-note {
+    color: var(--vert-principal);
+}
+
+.btn,
+.search-button-modern,
+.btn-appliquer-filtres,
+.btn-filtres {
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.btn-vert,
+.search-button-modern,
+.btn-appliquer-filtres {
+    background: linear-gradient(135deg, var(--vert-principal), var(--vert-fonce));
+    color: #07100b;
+    box-shadow: 0 12px 26px rgba(34,240,120,0.2);
+}
+
+.btn-vert:hover,
+.search-button-modern:hover,
+.btn-appliquer-filtres:hover {
+    background: linear-gradient(135deg, #5cff9b, var(--vert-principal));
+    color: #07100b;
+}
+
+.btn-gris,
+.search-reset {
+    background-color: var(--surface-3);
+    color: #d7dfeb;
+    border: 1px solid var(--ligne);
+}
+
+.btn-gris:hover,
+.search-reset:hover {
+    background-color: #2b3948;
+    color: var(--texte-fort);
+}
+
+.btn-rouge-plein {
+    background-color: rgba(255,93,93,0.18);
+    color: #ff9a9a;
+    border: 1px solid rgba(255,93,93,0.38);
+}
+
+.groupe-champ input,
+.groupe-champ select,
+.groupe-champ textarea,
+.groupe-filtre select {
+    background-color: #0d131b;
+    border: 1px solid var(--ligne);
+    color: var(--texte-fort);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.groupe-champ input::placeholder,
+.groupe-champ textarea::placeholder,
+.search-input-modern::placeholder {
+    color: #6f7c8a;
+}
+
+.groupe-champ input:focus,
+.groupe-champ select:focus,
+.groupe-champ textarea:focus,
+.groupe-filtre select:focus {
+    border-color: var(--vert-principal);
+    box-shadow: 0 0 0 4px rgba(34,240,120,0.13);
+}
+
+.carte-webtoon {
+    border-radius: 16px;
+}
+
+.carte-webtoon:hover {
+    box-shadow: 0 22px 48px rgba(0,0,0,0.48), 0 0 0 1px rgba(34,240,120,0.24);
+}
+
+.carte-webtoon-image {
+    background-color: #0d131b;
+}
+
+.carte-webtoon-image-placeholder {
+    background: linear-gradient(135deg, #101823, #173322);
+    color: var(--vert-principal);
+}
+
+.carte-webtoon-actions {
+    border-top: 1px solid var(--ligne);
+    background-color: rgba(8,11,16,0.32);
+}
+
+.btn-modifier {
+    background-color: rgba(34,169,255,0.13);
+    color: #82cfff;
+    border: 1px solid rgba(34,169,255,0.22);
+}
+
+.btn-supprimer {
+    background-color: rgba(255,93,93,0.13);
+    color: #ff9191;
+    border: 1px solid rgba(255,93,93,0.24);
+}
+
+.badge-statut {
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.badge-a_lire {
+    background-color: rgba(72,164,255,0.14);
+    color: #8dcaff;
+}
+
+.badge-en_cours {
+    background-color: rgba(255,196,87,0.14);
+    color: #ffd27a;
+}
+
+.badge-termine {
+    background-color: rgba(34,240,120,0.14);
+    color: var(--vert-principal);
+}
+
+.filtre-btn {
+    background-color: var(--surface);
+    border: 1px solid var(--ligne);
+    color: var(--texte-doux);
+}
+
+.filtre-btn:hover,
+.filtre-btn.actif {
+    border-color: var(--vert-principal);
+    background-color: rgba(34,240,120,0.16);
+    color: var(--vert-principal);
+}
+
+.search-bar {
+    background-color: #0d131b;
+    border-color: var(--ligne);
+    box-shadow: 0 18px 36px rgba(0,0,0,0.36);
+}
+
+.search-icon {
+    color: var(--vert-principal);
+}
+
+.search-input-modern {
+    color: var(--texte-fort);
+}
+
+.search-bar:focus-within {
+    border-color: var(--vert-principal);
+    box-shadow: 0 18px 36px rgba(0,0,0,0.36), 0 0 0 4px rgba(34,240,120,0.14);
+}
+
+.btn-filtres {
+    background-color: rgba(34,240,120,0.12);
+    border-color: rgba(34,240,120,0.35);
+    color: var(--vert-principal);
+}
+
+.zone-filtres {
+    background-color: #0d131b;
+    border-color: var(--ligne);
+}
+
+.groupe-filtre label,
+.filtre-checkbox {
+    color: var(--texte-doux);
+}
+
+.alerte {
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.alerte-erreur {
+    background-color: rgba(255,93,93,0.12);
+    color: #ff9d9d;
+    border-left-color: var(--rouge);
+}
+
+.alerte-succes {
+    background-color: rgba(34,240,120,0.12);
+    color: var(--vert-principal);
+    border-left-color: var(--vert-principal);
+}
+
+@media (max-width: 700px) {
+    .navbar {
+        height: auto;
+        padding: 1rem;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .navbar-liens {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+    }
+
+    .contenu-principal {
+        padding: 1rem;
+    }
+
+    .entete-page,
+    .entete-section-tendance {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .bloc-section-tendance {
+        padding: 0.9rem;
+    }
+
+    .btn-voir-plus {
+        width: 100%;
+    }
+
+    .details-webtoon.ouvert {
+        grid-template-columns: 1fr;
+    }
+
+    .details-webtoon-media img {
+        width: 100%;
+        height: 220px;
+    }
+}
+
+/* ===== PRIORITE FINALE : CARTES PROPRES ET ALIGNEES ===== */
+.grille-webtoons,
+.grille-tendance {
+    gap: 1.25rem;
+    align-items: stretch;
+}
+
+.carte-webtoon {
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+}
+
+.carte-webtoon-image,
+.carte-webtoon-image-placeholder {
+    height: 235px;
+    flex: 0 0 235px;
+}
+
+.carte-webtoon-corps {
+    min-height: 116px;
+    padding: 0.9rem 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.carte-webtoon-titre {
+    min-height: 2.8em;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carte-webtoon-auteur {
+    min-height: 2.9em;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carte-webtoon-actions {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    padding: 0.75rem 0.9rem;
+}
+
+.carte-webtoon-actions form {
+    width: 100%;
+}
+
+.btn-carte {
+    width: 100%;
+    min-height: 34px;
+    padding: 0.45rem 0.65rem;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    box-shadow: none;
 }

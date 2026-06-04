@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Bibliothèque">
+  <path d="M9 13h8v28H9zM20 9h8v32h-8zM31 15h8v26h-8z" fill="none" stroke="#22f078" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M12 20h2M23 17h2M34 23h2" stroke="#8dffc1" stroke-width="3" stroke-linecap="round"/>
+</svg>

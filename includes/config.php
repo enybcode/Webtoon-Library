@@ -6,11 +6,11 @@
 // Détecte automatiquement le nom de la BDD depuis le nom du dossier projet.
 // Ex: htdocs/webtoon_library  → BDD : webtoon_library
 // Ex: htdocs/Webtoon-Library  → BDD : Webtoon-Library
-$nomDossier = basename(dirname(__DIR__));
+$nomBase = 'webtoon_library';
 
 // On utilise defined() pour éviter une erreur si config.php est inclus deux fois
 if (!defined('DB_HOST')) define('DB_HOST', 'localhost');
-if (!defined('DB_NOM'))  define('DB_NOM',  $nomDossier);
+if (!defined('DB_NOM'))  define('DB_NOM',  $nomBase);
 if (!defined('DB_USER')) define('DB_USER', 'root');
 if (!defined('DB_PASS')) define('DB_PASS', ''); // Vide par défaut sur XAMPP/WAMP
 

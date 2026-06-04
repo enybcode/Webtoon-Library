@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Webtoon-Library">
+  <rect width="64" height="64" rx="18" fill="#0d131b"/>
+  <path d="M15 18c8 0 13 2 17 7 4-5 9-7 17-7v29c-8 0-13 2-17 7-4-5-9-7-17-7V18Z" fill="none" stroke="#22f078" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M32 25v29" stroke="#22f078" stroke-width="4" stroke-linecap="round"/>
+  <path d="M22 27h6M22 35h6M38 27h6M38 35h6" stroke="#8dffc1" stroke-width="3" stroke-linecap="round"/>
+  <path d="M43 11h8a8 8 0 0 1 8 8v3" fill="none" stroke="#22f078" stroke-width="3" stroke-linecap="round"/>
+</svg>

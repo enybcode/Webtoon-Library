@@ -90,7 +90,7 @@ include 'includes/header.php';
 ?>
 
 <div class="carte-formulaire-large">
-    <h1>✏️ Modifier un webtoon</h1>
+    <h1>Modifier un webtoon</h1>
 
     <?php if ($erreur): ?>
         <div class="alerte alerte-erreur"><?= htmlspecialchars($erreur) ?></div>
@@ -166,7 +166,9 @@ include 'includes/header.php';
         </div>
 
         <div style="display:flex; gap:1rem; margin-top:0.5rem;">
-            <button type="submit" class="btn btn-vert">💾 Enregistrer</button>
+            <button type="submit" class="btn btn-vert">
+                <img src="<?= $base ?>/assets/img/icon-save.svg" alt="" class="action-icon"> Enregistrer
+            </button>
             <a href="webtoons.php" class="btn btn-gris">Annuler</a>
         </div>
     </form>
