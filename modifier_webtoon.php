@@ -1,175 +1,154 @@
 <?php
 // =============================================
-// modifier_webtoon.php — Modification d'un webtoon
+// modifier_webtoon.php - Modification du suivi personnel
 // =============================================
 
 session_start();
 include 'includes/config.php';
+include 'includes/traductions.php';
 
-// Protection de la page
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
     exit;
 }
 
 $userId = $_SESSION['user_id'];
+$id = (int)($_GET['id'] ?? 0);
 $erreur = '';
 
-// ===== RÉCUPÉRATION DU WEBTOON À MODIFIER =====
-// On récupère l'ID depuis l'URL (?id=X)
-$id = (int)($_GET['id'] ?? 0);
-
-if ($id === 0) {
+if ($id <= 0) {
     header('Location: webtoons.php');
     exit;
 }
 
-// On cherche le webtoon dans la base
-// IMPORTANT : on vérifie que le webtoon appartient bien à l'utilisateur connecté
 $requete = $pdo->prepare("SELECT * FROM webtoons WHERE id = ? AND id_utilisateur = ?");
 $requete->execute([$id, $userId]);
 $wt = $requete->fetch();
 
-// Si le webtoon n'existe pas ou ne lui appartient pas, on redirige
 if (!$wt) {
     header('Location: webtoons.php');
     exit;
 }
 
-// ===== TRAITEMENT DU FORMULAIRE DE MODIFICATION =====
+$statutsValides = ['a_lire', 'en_cours', 'en_pause', 'termine', 'abandonne'];
+$intentionsValides = ['continuer', 'hesite', 'arreter'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $statut = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
+    $intention = in_array($_POST['intention'] ?? '', $intentionsValides) ? $_POST['intention'] : 'hesite';
+    $chapitre = max(0, (int)($_POST['chapitre_actuel'] ?? 0));
+    $note = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
+    $commentaire = trim($_POST['commentaire'] ?? '');
 
-    $titre    = trim($_POST['titre'] ?? '');
-    $auteur   = trim($_POST['auteur'] ?? '');
-    $genre    = trim($_POST['genre'] ?? '');
-    $desc     = trim($_POST['description'] ?? '');
-    // On valide que le statut est bien une des 3 valeurs autorisées
-    $statutsValides = ['a_lire', 'en_cours', 'termine'];
-    $statut   = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
-    $chapitre = (int)($_POST['chapitre_actuel'] ?? 0);
-    $note     = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
-    // Sécurité : on s'assure que la note est bien entre 0 et 10
-    if ($note !== null && ($note < 0 || $note > 10)) $note = null;
-    $imageUrl = trim($_POST['image_url'] ?? '');
-
-    if (empty($titre)) {
-        $erreur = "Le titre est obligatoire.";
+    if ($note !== null && ($note < 0 || $note > 10)) {
+        $erreur = t('score_error');
     } else {
-        // On met à jour le webtoon
-        // On s'assure encore que id_utilisateur correspond (sécurité)
         $update = $pdo->prepare(
             "UPDATE webtoons
-             SET titre=?, auteur=?, genre=?, description=?, statut=?,
-                 chapitre_actuel=?, note=?, image_url=?
-             WHERE id=? AND id_utilisateur=?"
+             SET statut = ?, chapitre_actuel = ?, note = ?, commentaire = ?, intention = ?,
+                 date_modification = CURRENT_TIMESTAMP
+             WHERE id = ? AND id_utilisateur = ?"
         );
         $update->execute([
-            $titre, $auteur, $genre, $desc,
-            $statut, $chapitre, $note, $imageUrl,
-            $id, $userId
+            $statut,
+            $chapitre,
+            $note,
+            $commentaire !== '' ? $commentaire : null,
+            $intention,
+            $id,
+            $userId
         ]);
 
         header('Location: webtoons.php?modif=ok');
         exit;
     }
 
-    // Si erreur, on remet uniquement les champs du formulaire dans $wt
-    // (on ne fait PAS array_merge($wt, $_POST) pour éviter d'écraser des champs système)
-    $wt['titre']           = $titre;
-    $wt['auteur']          = $auteur;
-    $wt['genre']           = $genre;
-    $wt['description']     = $desc;
-    $wt['statut']          = $statut;
+    $wt['statut'] = $statut;
     $wt['chapitre_actuel'] = $chapitre;
-    $wt['note']            = $note;
-    $wt['image_url']       = $imageUrl;
+    $wt['note'] = $note;
+    $wt['commentaire'] = $commentaire;
+    $wt['intention'] = $intention;
 }
 
-$titre_page = "Modifier un webtoon";
+$titre_page = t('edit_progress');
 include 'includes/header.php';
 ?>
 
 <div class="carte-formulaire-large">
-    <h1>Modifier un webtoon</h1>
+    <h1><?= htmlspecialchars(t('edit_progress')) ?></h1>
+
+    <div class="resume-suivi">
+        <?php if (!empty($wt['image_url'])): ?>
+            <img src="<?= htmlspecialchars($wt['image_url']) ?>" alt="<?= htmlspecialchars($wt['titre']) ?>">
+        <?php endif; ?>
+        <div>
+            <h2><?= htmlspecialchars($wt['titre']) ?></h2>
+            <?php if (!empty($wt['genre'])): ?>
+                <p><?= htmlspecialchars($wt['genre']) ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
 
     <?php if ($erreur): ?>
         <div class="alerte alerte-erreur"><?= htmlspecialchars($erreur) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="modifier_webtoon.php?id=<?= $id ?>">
-        <!-- Sécurité : on passe aussi l'id en champ caché au cas où l'URL serait modifiée -->
-        <input type="hidden" name="id" value="<?= $id ?>">
-
-        <div class="groupe-champ">
-            <label for="titre">Titre <span style="color:red">*</span></label>
-            <input type="text" id="titre" name="titre"
-                   value="<?= htmlspecialchars($wt['titre']) ?>" required>
-        </div>
-
+    <form method="POST" action="modifier_webtoon.php?id=<?= (int)$id ?>">
         <div class="grille-2-colonnes">
             <div class="groupe-champ">
-                <label for="auteur">Auteur</label>
-                <input type="text" id="auteur" name="auteur"
-                       value="<?= htmlspecialchars($wt['auteur'] ?? '') ?>">
-            </div>
-
-            <div class="groupe-champ">
-                <label for="genre">Genre</label>
-                <input type="text" id="genre" name="genre"
-                       value="<?= htmlspecialchars($wt['genre'] ?? '') ?>">
-            </div>
-        </div>
-
-        <div class="groupe-champ">
-            <label for="description">Description</label>
-            <textarea id="description" name="description"><?= htmlspecialchars($wt['description'] ?? '') ?></textarea>
-        </div>
-
-        <div class="grille-2-colonnes">
-            <div class="groupe-champ">
-                <label for="statut">Statut de lecture</label>
+                <label for="statut"><?= htmlspecialchars(t('status')) ?></label>
                 <select id="statut" name="statut">
-                    <option value="a_lire"   <?= $wt['statut'] === 'a_lire'   ? 'selected' : '' ?>>À lire</option>
-                    <option value="en_cours" <?= $wt['statut'] === 'en_cours' ? 'selected' : '' ?>>En cours</option>
-                    <option value="termine"  <?= $wt['statut'] === 'termine'  ? 'selected' : '' ?>>Terminé</option>
+                    <option value="a_lire" <?= $wt['statut'] === 'a_lire' ? 'selected' : '' ?>><?= htmlspecialchars(t('to_read')) ?></option>
+                    <option value="en_cours" <?= $wt['statut'] === 'en_cours' ? 'selected' : '' ?>><?= htmlspecialchars(t('reading')) ?></option>
+                    <option value="en_pause" <?= $wt['statut'] === 'en_pause' ? 'selected' : '' ?>><?= htmlspecialchars(t('paused')) ?></option>
+                    <option value="termine" <?= $wt['statut'] === 'termine' ? 'selected' : '' ?>><?= htmlspecialchars(t('finished')) ?></option>
+                    <option value="abandonne" <?= $wt['statut'] === 'abandonne' ? 'selected' : '' ?>><?= htmlspecialchars(t('dropped')) ?></option>
                 </select>
             </div>
 
             <div class="groupe-champ">
-                <label for="chapitre_actuel">Chapitre actuel</label>
+                <label for="intention"><?= htmlspecialchars(t('intention')) ?></label>
+                <select id="intention" name="intention">
+                    <option value="continuer" <?= ($wt['intention'] ?? 'hesite') === 'continuer' ? 'selected' : '' ?>><?= htmlspecialchars(t('continue')) ?></option>
+                    <option value="hesite" <?= ($wt['intention'] ?? 'hesite') === 'hesite' ? 'selected' : '' ?>><?= htmlspecialchars(t('unsure')) ?></option>
+                    <option value="arreter" <?= ($wt['intention'] ?? 'hesite') === 'arreter' ? 'selected' : '' ?>><?= htmlspecialchars(t('stop')) ?></option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grille-2-colonnes">
+            <div class="groupe-champ">
+                <label for="chapitre_actuel"><?= htmlspecialchars(t('chapter_current')) ?></label>
                 <input type="number" id="chapitre_actuel" name="chapitre_actuel"
-                       min="0" value="<?= (int)$wt['chapitre_actuel'] ?>">
+                       min="0" value="<?= (int)($wt['chapitre_actuel'] ?? 0) ?>">
+            </div>
+
+            <div class="groupe-champ">
+                <label for="note"><?= htmlspecialchars(t('personal_score')) ?></label>
+                <select id="note" name="note">
+                    <option value=""><?= htmlspecialchars(t('not_rated')) ?></option>
+                    <?php for ($i = 0; $i <= 10; $i++): ?>
+                        <option value="<?= $i ?>" <?= (!is_null($wt['note']) && (int)$wt['note'] === $i) ? 'selected' : '' ?>>
+                            <?= $i ?>/10
+                        </option>
+                    <?php endfor; ?>
+                </select>
             </div>
         </div>
 
         <div class="groupe-champ">
-            <label for="note">Note (0 à 10)</label>
-            <select id="note" name="note">
-                <option value="">-- Pas encore notée --</option>
-                <?php for ($i = 0; $i <= 10; $i++): ?>
-                    <option value="<?= $i ?>"
-                        <?= (!is_null($wt['note']) && (int)$wt['note'] === $i) ? 'selected' : '' ?>>
-                        <?= $i ?>/10
-                    </option>
-                <?php endfor; ?>
-            </select>
+            <label for="commentaire"><?= htmlspecialchars(t('comment')) ?></label>
+            <textarea id="commentaire" name="commentaire" placeholder="<?= htmlspecialchars(langueCourante() === 'fr' ? "Ex : j'aime le rythme, mais je veux faire une pause..." : 'Example: I like the pacing, but I want to take a break...') ?>"><?= htmlspecialchars($wt['commentaire'] ?? '') ?></textarea>
         </div>
 
-        <div class="groupe-champ">
-            <label for="image_url">URL de l'image</label>
-            <input type="url" id="image_url" name="image_url"
-                   value="<?= htmlspecialchars($wt['image_url'] ?? '') ?>"
-                   placeholder="https://exemple.com/image.jpg">
-            <img id="apercu-image"
-                 style="display:none; margin-top:0.8rem; border-radius:8px; max-height:200px;"
-                 alt="Aperçu">
-        </div>
-
-        <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+        <div class="actions-formulaire">
             <button type="submit" class="btn btn-vert">
-                <img src="<?= $base ?>/assets/img/icon-save.svg" alt="" class="action-icon"> Enregistrer
+                <img src="<?= $base ?>/assets/img/icon-save.svg" alt="" class="action-icon"> <?= htmlspecialchars(t('save')) ?>
             </button>
-            <a href="webtoons.php" class="btn btn-gris">Annuler</a>
+            <a href="webtoons.php" class="btn btn-gris"><?= htmlspecialchars(t('cancel')) ?></a>
+            <?php if (!empty($wt['anilist_id'])): ?>
+                <a href="detail_webtoon.php?id=<?= (int)$wt['anilist_id'] ?>" class="btn btn-gris"><?= htmlspecialchars(t('details')) ?></a>
+            <?php endif; ?>
         </div>
     </form>
 </div>

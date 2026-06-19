@@ -1,10 +1,11 @@
 <?php
 // =============================================
-// webtoons.php - Liste de tous mes webtoons
+// webtoons.php - Liste personnelle
 // =============================================
 
 session_start();
 include 'includes/config.php';
+include 'includes/traductions.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -13,60 +14,136 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
+function chercherAnilistIdParTitre($titre)
+{
+    if (!function_exists('curl_init') || trim($titre) === '') {
+        return null;
+    }
+
+    $query = '
+        query ($search: String!) {
+            Page(page: 1, perPage: 1) {
+                media(search: $search, type: MANGA, isAdult: false) {
+                    id
+                    title { romaji english native }
+                }
+            }
+        }
+    ';
+
+    $curl = curl_init('https://graphql.anilist.co');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode([
+        'query' => $query,
+        'variables' => ['search' => $titre]
+    ]));
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 8);
+
+    $response = curl_exec($curl);
+    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+    if ($response === false || $httpCode !== 200) {
+        return null;
+    }
+
+    $data = json_decode($response, true);
+    $resultat = $data['data']['Page']['media'][0] ?? null;
+
+    return !empty($resultat['id']) ? (int)$resultat['id'] : null;
+}
+
 $requete = $pdo->prepare(
     "SELECT * FROM webtoons WHERE id_utilisateur = ? ORDER BY date_ajout DESC"
 );
 $requete->execute([$userId]);
 $webtoons = $requete->fetchAll();
 
+// Repare les anciennes oeuvres ajoutees avant la colonne anilist_id.
+foreach ($webtoons as $index => $wt) {
+    if (empty($wt['anilist_id']) && !empty($wt['titre'])) {
+        $anilistIdTrouve = chercherAnilistIdParTitre($wt['titre']);
+
+        if ($anilistIdTrouve) {
+            $updateAnilist = $pdo->prepare(
+                "UPDATE webtoons SET anilist_id = ? WHERE id = ? AND id_utilisateur = ?"
+            );
+            $updateAnilist->execute([$anilistIdTrouve, $wt['id'], $userId]);
+            $webtoons[$index]['anilist_id'] = $anilistIdTrouve;
+        }
+    }
+}
+
 $labelsStatut = [
-    'a_lire'   => 'A lire',
-    'en_cours' => 'En cours',
-    'termine'  => 'Termine'
+    'a_lire' => t('to_read'),
+    'en_cours' => t('reading'),
+    'en_pause' => t('paused'),
+    'abandonne' => t('dropped'),
+    'termine' => t('finished')
 ];
 
-$titre_page = "Ma liste";
+$labelsIntention = [
+    'continuer' => t('continue'),
+    'hesite' => t('unsure'),
+    'arreter' => t('stop')
+];
+
+$titre_page = t('my_list');
 include 'includes/header.php';
 
-if (isset($_GET['ajout']))    echo '<div class="alerte alerte-succes">Webtoon ajoute avec succes !</div>';
-if (isset($_GET['modif']))    echo '<div class="alerte alerte-succes">Webtoon modifie avec succes !</div>';
-if (isset($_GET['supprime'])) echo '<div class="alerte alerte-succes">Webtoon supprime.</div>';
+if (isset($_GET['ajout'])) {
+    echo '<div class="alerte alerte-succes">' . htmlspecialchars(t('add_success')) . '</div>';
+}
+if (isset($_GET['modif'])) {
+    echo '<div class="alerte alerte-succes">' . htmlspecialchars(t('edit_success')) . '</div>';
+}
+if (isset($_GET['supprime'])) {
+    echo '<div class="alerte alerte-succes">' . htmlspecialchars(t('delete_success')) . '</div>';
+}
 ?>
 
 <div class="entete-page">
-    <h1 class="page-titre">Ma liste de webtoons</h1>
-    <a href="ajouter_webtoon.php" class="btn btn-vert">+ Ajouter</a>
+    <h1 class="page-titre"><?= htmlspecialchars(t('my_list')) ?></h1>
+    <a href="ajouter_webtoon.php" class="btn btn-vert">+ <?= htmlspecialchars(t('add')) ?></a>
 </div>
 
 <?php if (empty($webtoons)): ?>
     <div class="message-vide">
         <img src="<?= $base ?>/assets/img/icon-empty.svg" alt="" class="icone-vide-svg">
-        <p>Votre liste est vide pour l'instant.<br>
-           <a href="ajouter_webtoon.php" class="btn btn-vert btn-espace-haut">
-               Ajouter mon premier webtoon
-           </a>
+        <p>
+            <?= htmlspecialchars(langueCourante() === 'fr' ? "Votre liste est vide pour l'instant." : 'Your list is empty for now.') ?><br>
+            <a href="ajouter_webtoon.php" class="btn btn-vert btn-espace-haut">
+                <?= htmlspecialchars(t('first_webtoon')) ?>
+            </a>
         </p>
     </div>
 <?php else: ?>
 
     <div class="barre-filtres">
         <button class="filtre-btn" data-filtre="tous" onclick="filtrerWebtoons('tous')">
-            Tous (<?= count($webtoons) ?>)
+            <?= htmlspecialchars(t('all')) ?> (<?= count($webtoons) ?>)
         </button>
         <button class="filtre-btn" data-filtre="en_cours" onclick="filtrerWebtoons('en_cours')">
-            En cours
+            <?= htmlspecialchars(t('reading')) ?>
         </button>
         <button class="filtre-btn" data-filtre="a_lire" onclick="filtrerWebtoons('a_lire')">
-            A lire
+            <?= htmlspecialchars(t('to_read')) ?>
         </button>
         <button class="filtre-btn" data-filtre="termine" onclick="filtrerWebtoons('termine')">
-            Termines
+            <?= htmlspecialchars(t('finished')) ?>
+        </button>
+        <button class="filtre-btn" data-filtre="en_pause" onclick="filtrerWebtoons('en_pause')">
+            <?= htmlspecialchars(t('paused')) ?>
+        </button>
+        <button class="filtre-btn" data-filtre="abandonne" onclick="filtrerWebtoons('abandonne')">
+            <?= htmlspecialchars(t('dropped')) ?>
         </button>
     </div>
 
     <div class="grille-webtoons">
         <?php foreach ($webtoons as $wt): ?>
-            <div class="carte-webtoon" data-statut="<?= $wt['statut'] ?>">
+            <div class="carte-webtoon" data-statut="<?= htmlspecialchars($wt['statut']) ?>">
                 <?php if (!empty($wt['image_url'])): ?>
                     <img class="carte-webtoon-image"
                          src="<?= htmlspecialchars($wt['image_url']) ?>"
@@ -84,35 +161,54 @@ if (isset($_GET['supprime'])) echo '<div class="alerte alerte-succes">Webtoon su
                 <div class="carte-webtoon-corps">
                     <div class="carte-webtoon-titre"><?= htmlspecialchars($wt['titre']) ?></div>
                     <div class="carte-webtoon-auteur">
-                        <?= htmlspecialchars($wt['auteur'] ?? 'Inconnu') ?>
-                        <?php if ($wt['genre']): ?>
+                        <?= htmlspecialchars($wt['auteur'] ?? t('unknown_author')) ?>
+                        <?php if (!empty($wt['genre'])): ?>
                             - <em><?= htmlspecialchars($wt['genre']) ?></em>
                         <?php endif; ?>
                     </div>
 
-                    <span class="badge-statut badge-<?= $wt['statut'] ?>">
-                        <?= $labelsStatut[$wt['statut']] ?>
+                    <span class="badge-statut badge-<?= htmlspecialchars($wt['statut']) ?>">
+                        <?= htmlspecialchars($labelsStatut[$wt['statut']] ?? t('to_read')) ?>
                     </span>
 
-                    <?php if ($wt['chapitre_actuel'] > 0): ?>
-                        <div class="carte-webtoon-meta">
-                            Chapitre <?= $wt['chapitre_actuel'] ?>
-                        </div>
-                    <?php endif; ?>
+                    <div class="carte-webtoon-meta">
+                        <?= htmlspecialchars(t('chapters')) ?> <?= (int)($wt['chapitre_actuel'] ?? 0) ?>
+                    </div>
 
                     <?php if (!is_null($wt['note'])): ?>
-                        <div class="carte-webtoon-note"><?= $wt['note'] ?>/10</div>
+                        <div class="carte-webtoon-note"><?= (int)$wt['note'] ?>/10</div>
                     <?php endif; ?>
+
+                    <div class="carte-webtoon-meta">
+                        <?= htmlspecialchars($labelsIntention[$wt['intention'] ?? 'hesite'] ?? t('unsure')) ?>
+                    </div>
                 </div>
 
-                <div class="carte-webtoon-actions">
-                    <a href="modifier_webtoon.php?id=<?= $wt['id'] ?>" class="btn-modifier">
-                        <img src="<?= $base ?>/assets/img/icon-edit.svg" alt="" class="action-icon"> Modifier
+                <div class="card-actions">
+                    <div class="card-actions-row">
+                        <?php if (!empty($wt['anilist_id'])): ?>
+                            <a href="detail_webtoon.php?id=<?= (int)$wt['anilist_id'] ?>" class="btn btn-gris btn-carte">
+                                <?= htmlspecialchars(t('details')) ?>
+                            </a>
+                        <?php else: ?>
+                            <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled><?= htmlspecialchars(t('details_unavailable')) ?></button>
+                        <?php endif; ?>
+
+                        <a href="modifier_webtoon.php?id=<?= (int)$wt['id'] ?>" class="btn btn-vert btn-carte">
+                            <?= htmlspecialchars(t('edit_progress')) ?>
+                        </a>
+                    </div>
+
+                    <a href="#" class="btn-supprimer btn-carte card-action-full"
+                       onclick="return confirmerSuppression('supprimer_webtoon.php?id=<?= (int)$wt['id'] ?>')">
+                       <?= htmlspecialchars(t('delete')) ?>
                     </a>
-                    <a href="#" class="btn-supprimer"
-                       onclick="return confirmerSuppression('supprimer_webtoon.php?id=<?= $wt['id'] ?>')">
-                       <img src="<?= $base ?>/assets/img/icon-trash.svg" alt="" class="action-icon"> Supprimer
-                    </a>
+
+                    <?php if (empty($wt['anilist_id'])): ?>
+                        <small class="details-note">
+                            <?= htmlspecialchars(t('anilist_no_match')) ?>
+                        </small>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

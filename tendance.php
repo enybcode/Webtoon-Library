@@ -5,6 +5,7 @@
 
 session_start();
 include 'includes/config.php';
+include 'includes/traductions.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -17,27 +18,17 @@ $erreur = '';
 $succes = '';
 $erreursAnilist = [];
 
-$categories = [
-    'general' => 'General',
-    'Action' => 'Action',
-    'Fantasy' => 'Fantasy',
-    'Romance' => 'Romance',
-    'Drama' => 'Drama',
-    'Comedy' => 'Comedy',
-    'Horror' => 'Horror',
-    'Adventure' => 'Adventure',
-    'Mystery' => 'Mystery',
-    'Sports' => 'Sports'
-];
+$categories = ['general' => 'General'] + chargerCategoriesAdmin($pdo, true);
 
-$categoriesAdultes = $categories;
-unset($categoriesAdultes['Sports']);
+$categoriesAdultes = ['general' => 'General'] + chargerCategoriesAdmin($pdo, false);
 
 $sections = [
     'tendance' => [
-        'titre' => 'Tendance',
-        'description' => 'Les oeuvres les plus suivies en ce moment sur AniList.',
-        'bouton' => 'Voir plus de tendances',
+        'titre' => t('trends'),
+        'description' => langueCourante() === 'fr'
+            ? 'Les oeuvres les plus suivies en ce moment sur AniList.'
+            : 'The most followed works right now on AniList.',
+        'bouton' => t('more_trends'),
         'categories' => $categories,
         'sort' => 'TRENDING_DESC',
         'status' => null,
@@ -45,9 +36,11 @@ $sections = [
         'isAdult' => false
     ],
     'future' => [
-        'titre' => 'Future pepite',
-        'description' => 'Des oeuvres recentes et en cours qui peuvent encore monter.',
-        'bouton' => 'Voir plus de futures pepites',
+        'titre' => t('future_gem'),
+        'description' => langueCourante() === 'fr'
+            ? 'Des oeuvres recentes et en cours qui peuvent encore monter.'
+            : 'Recent ongoing works that could still rise.',
+        'bouton' => t('more_future'),
         'categories' => $categories,
         'sort' => 'TRENDING_DESC',
         'status' => 'RELEASING',
@@ -55,9 +48,11 @@ $sections = [
         'isAdult' => false
     ],
     'ancienne' => [
-        'titre' => 'Ancienne pepite',
-        'description' => 'Des oeuvres terminees qui restent tres populaires.',
-        'bouton' => "Voir plus d'anciennes pepites",
+        'titre' => t('old_gem'),
+        'description' => langueCourante() === 'fr'
+            ? 'Des oeuvres terminees qui restent tres populaires.'
+            : 'Finished works that are still very popular.',
+        'bouton' => t('more_old'),
         'categories' => $categories,
         'sort' => 'POPULARITY_DESC',
         'status' => 'FINISHED',
@@ -68,9 +63,11 @@ $sections = [
 
 if ($inclureAdulte) {
     $sections['adulte'] = [
-        'titre' => 'Top +18',
-        'description' => 'Selection adulte affichee uniquement si le +18 est active dans les parametres.',
-        'bouton' => 'Voir plus de +18',
+        'titre' => t('top_adult'),
+        'description' => langueCourante() === 'fr'
+            ? 'Selection adulte affichee uniquement si le +18 est active dans les parametres.'
+            : 'Adult selection shown only when +18 is enabled in settings.',
+        'bouton' => t('more_adult'),
         'categories' => $categoriesAdultes,
         'sort' => 'POPULARITY_DESC',
         'status' => null,
@@ -82,7 +79,9 @@ if ($inclureAdulte) {
 function appelerAnilistTendance($query, $variables, &$erreurApi)
 {
     if (!function_exists('curl_init')) {
-        $erreurApi = "L'extension PHP cURL n'est pas activee. AniList ne peut pas etre interroge.";
+        $erreurApi = langueCourante() === 'fr'
+            ? "L'extension PHP cURL n'est pas activee. AniList ne peut pas etre interroge."
+            : 'The PHP cURL extension is not enabled. AniList cannot be reached.';
         return [];
     }
 
@@ -100,22 +99,26 @@ function appelerAnilistTendance($query, $variables, &$erreurApi)
     $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
     if ($response === false) {
-        $erreurApi = "AniList ne repond pas pour le moment : " . curl_error($curl);
-        curl_close($curl);
+        $erreurApi = (langueCourante() === 'fr'
+            ? 'AniList ne repond pas pour le moment : '
+            : 'AniList is not responding right now: ') . curl_error($curl);
         return [];
     }
 
-    curl_close($curl);
 
     if ($httpCode !== 200) {
-        $erreurApi = "AniList a retourne une erreur HTTP " . $httpCode . ".";
+        $erreurApi = (langueCourante() === 'fr'
+            ? 'AniList a retourne une erreur HTTP '
+            : 'AniList returned HTTP error ') . $httpCode . '.';
         return [];
     }
 
     $data = json_decode($response, true);
 
     if (!isset($data['data']['Page']['media'])) {
-        $erreurApi = "La reponse AniList est invalide.";
+        $erreurApi = langueCourante() === 'fr'
+            ? 'La reponse AniList est invalide.'
+            : 'The AniList response is invalid.';
         return [];
     }
 
@@ -173,24 +176,11 @@ function recupererSectionAnilist($section, $genre, $page, &$erreurApi)
     return appelerAnilistTendance($query, $variables, $erreurApi);
 }
 
-function nettoyerDescriptionTendance($description)
-{
-    $description = html_entity_decode($description ?? '', ENT_QUOTES, 'UTF-8');
-    $description = strip_tags($description);
-    $description = trim(preg_replace('/\s+/', ' ', $description));
-
-    if (strlen($description) > 160) {
-        $description = substr($description, 0, 160) . '...';
-    }
-
-    return $description;
-}
-
 function titreAnilistTendance($webtoon)
 {
     return ($webtoon['title']['english'] ?? '')
         ?: (($webtoon['title']['romaji'] ?? '')
-        ?: (($webtoon['title']['native'] ?? '') ?: 'Titre inconnu'));
+        ?: (($webtoon['title']['native'] ?? '') ?: 'Unknown title'));
 }
 
 function urlTendance($parametres)
@@ -222,8 +212,8 @@ function ajouterParametreUrl($url, $cle, $valeur)
 function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
 {
     $titreCarte = titreAnilistTendance($wt);
-    $description = nettoyerDescriptionTendance($wt['description'] ?? '');
-    $genres = implode(', ', $wt['genres'] ?? []);
+    $description = descriptionSelonLangue($wt['description'] ?? '', 160);
+    $genres = traduireGenres($wt['genres'] ?? []);
     $image = $wt['coverImage']['large'] ?? '';
     $dejaAjoute = isset($mesTitres[strtolower($titreCarte)]);
     ?>
@@ -254,7 +244,7 @@ function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
 
         <div class="carte-webtoon-actions">
             <?php if ($dejaAjoute): ?>
-                <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled>Deja ajoute</button>
+                <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled><?= htmlspecialchars(t('already_added')) ?></button>
             <?php else: ?>
                 <form method="POST" action="<?= htmlspecialchars($urlRetour) ?>">
                     <input type="hidden" name="retour" value="<?= htmlspecialchars($urlRetour) ?>">
@@ -263,10 +253,10 @@ function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
                     <input type="hidden" name="genres" value="<?= htmlspecialchars($genres) ?>">
                     <input type="hidden" name="description" value="<?= htmlspecialchars($description) ?>">
                     <input type="hidden" name="image_url" value="<?= htmlspecialchars($image) ?>">
-                    <button type="submit" class="btn btn-vert btn-carte">Ajouter</button>
+                    <button type="submit" class="btn btn-vert btn-carte"><?= htmlspecialchars(t('add')) ?></button>
                 </form>
             <?php endif; ?>
-            <a href="detail_webtoon.php?id=<?= (int)$wt['id'] ?>" class="btn btn-gris btn-carte">Voir details</a>
+            <a href="detail_webtoon.php?id=<?= (int)$wt['id'] ?>" class="btn btn-gris btn-carte"><?= htmlspecialchars(t('details')) ?></a>
         </div>
     </div>
     <?php
@@ -275,8 +265,8 @@ function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $anilistId = (int)($_POST['anilist_id'] ?? 0);
     $titreAnilist = trim($_POST['titre'] ?? '');
-    $genresAnilist = trim($_POST['genres'] ?? '');
-    $descriptionAnilist = trim($_POST['description'] ?? '');
+    $genresAnilist = traduireGenres(trim($_POST['genres'] ?? ''));
+    $descriptionAnilist = descriptionSelonLangue($_POST['description'] ?? '');
     $imageAnilist = trim($_POST['image_url'] ?? '');
     $retour = $_POST['retour'] ?? 'tendance.php';
 
@@ -286,20 +276,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($anilistId > 0 && $titreAnilist !== '') {
         $reqExiste = $pdo->prepare(
-            "SELECT id FROM webtoons WHERE id_utilisateur = ? AND titre = ? LIMIT 1"
+            "SELECT id FROM webtoons
+             WHERE id_utilisateur = ? AND (anilist_id = ? OR titre = ?)
+             LIMIT 1"
         );
-        $reqExiste->execute([$userId, $titreAnilist]);
+        $reqExiste->execute([$userId, $anilistId, $titreAnilist]);
 
         if ($reqExiste->fetch()) {
-            $erreur = "Ce webtoon est deja dans votre bibliotheque.";
+            $erreur = t('already_in_library');
         } else {
             $insert = $pdo->prepare(
                 "INSERT INTO webtoons
-                 (id_utilisateur, titre, auteur, genre, description, statut, chapitre_actuel, note, image_url)
-                 VALUES (?, ?, ?, ?, ?, 'a_lire', 0, NULL, ?)"
+                 (id_utilisateur, anilist_id, titre, auteur, genre, description, statut, chapitre_actuel, note, intention, image_url)
+                 VALUES (?, ?, ?, ?, ?, ?, 'a_lire', 0, NULL, 'hesite', ?)"
             );
             $insert->execute([
                 $userId,
+                $anilistId,
                 $titreAnilist,
                 'AniList',
                 $genresAnilist,
@@ -311,12 +304,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } else {
-        $erreur = "Impossible d'ajouter ce webtoon.";
+        $erreur = t('add_error');
     }
 }
 
 if (isset($_GET['ajout'])) {
-    $succes = "Webtoon ajoute a votre bibliotheque.";
+    $succes = t('added_to_library');
 }
 
 $reqMesWebtoons = $pdo->prepare("SELECT titre FROM webtoons WHERE id_utilisateur = ?");
@@ -356,16 +349,16 @@ foreach ($sections as $cleSection => $section) {
 
 $urlRetour = urlTendanceCourante();
 
-$titre_page = "Tendance";
+$titre_page = t('trends');
 include 'includes/header.php';
 ?>
 
 <div class="entete-page">
     <div>
-        <h1 class="page-titre">Tendance</h1>
-        <p class="texte-page">Explore les tendances, les futures pepites et les classiques populaires depuis AniList.</p>
+        <h1 class="page-titre"><?= htmlspecialchars(t('trends')) ?></h1>
+        <p class="texte-page"><?= htmlspecialchars(t('trending_intro')) ?></p>
     </div>
-    <a href="webtoons.php" class="btn btn-gris">Voir ma liste</a>
+    <a href="webtoons.php" class="btn btn-gris"><?= htmlspecialchars(t('my_list')) ?></a>
 </div>
 
 <?php if ($erreur): ?>
@@ -395,7 +388,7 @@ include 'includes/header.php';
                 <h2><?= htmlspecialchars($section['titre']) ?></h2>
                 <p><?= htmlspecialchars($section['description']) ?></p>
             </div>
-            <span class="badge-section-tendance"><?= (int)($pageActive * 15) ?> resultats</span>
+            <span class="badge-section-tendance"><?= (int)($pageActive * 15) ?> <?= htmlspecialchars(t('results')) ?></span>
         </div>
 
         <div class="barre-categories-tendance">
@@ -405,7 +398,7 @@ include 'includes/header.php';
                     $paramPage => 1
                 ])) ?>#<?= htmlspecialchars($cleSection) ?>"
                    class="btn-categorie-tendance <?= $categorieActive === $cleCategorie ? 'actif' : '' ?>">
-                    <?= htmlspecialchars($nomCategorie) ?>
+                    <?= htmlspecialchars($cleCategorie === 'general' ? t('general') : labelCategorieAdmin($pdo, $nomCategorie)) ?>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -413,7 +406,7 @@ include 'includes/header.php';
         <?php if (empty($etatSection['webtoons'])): ?>
             <div class="message-vide message-vide-compact">
                 <img src="<?= $base ?>/assets/img/icon-empty.svg" alt="" class="icone-vide-svg">
-                <p>Aucun resultat pour cette section.</p>
+                <p><?= htmlspecialchars(t('no_section_result')) ?></p>
             </div>
         <?php else: ?>
             <div class="grille-webtoons grille-tendance">

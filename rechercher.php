@@ -5,6 +5,7 @@
 
 session_start();
 include 'includes/config.php';
+include 'includes/traductions.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -13,7 +14,8 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 $recherche = trim($_GET['q'] ?? '');
-$genresValides = ['Action', 'Fantasy', 'Romance', 'Comedy', 'Drama', 'Horror', 'Sports', 'Adventure', 'Mystery'];
+$categoriesRecherche = chargerCategoriesAdmin($pdo, true);
+$genresValides = array_keys($categoriesRecherche);
 $trisValides = ['popularite', 'note', 'recent'];
 $genreFiltre = in_array($_GET['genre'] ?? '', $genresValides) ? $_GET['genre'] : '';
 $inclureAdulte = !empty($_SESSION['inclure_adulte']);
@@ -45,11 +47,9 @@ function appelerAnilist($query, $variables, &$erreurApi)
 
     if ($response === false) {
         $erreurApi = "AniList ne repond pas pour le moment : " . curl_error($curl);
-        curl_close($curl);
         return [];
     }
 
-    curl_close($curl);
 
     if ($httpCode !== 200) {
         $erreurApi = "AniList a retourne une erreur HTTP " . $httpCode . ".";
@@ -96,56 +96,6 @@ function rechercherAnilist($search, $genre, $inclureAdulte, $tri, &$erreurApi)
     ], $erreurApi);
 }
 
-function nettoyerDescription($description)
-{
-    $description = html_entity_decode($description ?? '', ENT_QUOTES, 'UTF-8');
-    $description = strip_tags($description);
-    $description = trim(preg_replace('/\s+/', ' ', $description));
-
-    $remplacements = [
-        'A story about' => 'Une histoire sur',
-        'This story follows' => 'Cette histoire suit',
-        'The story follows' => 'L histoire suit',
-        'follows' => 'suit',
-        'After' => 'Apres',
-        'after' => 'apres',
-        'In a world' => 'Dans un monde',
-        'in a world' => 'dans un monde',
-        'where' => 'ou',
-        'young' => 'jeune',
-        'boy' => 'garcon',
-        'girl' => 'fille',
-        'man' => 'homme',
-        'woman' => 'femme',
-        'hero' => 'heros',
-        'must' => 'doit',
-        'fight' => 'combattre',
-        'becomes' => 'devient',
-        'discovers' => 'decouvre',
-        'secret' => 'secret',
-        'power' => 'pouvoir',
-        'magic' => 'magie',
-        'school' => 'ecole',
-        'family' => 'famille',
-        'friend' => 'ami',
-        'friends' => 'amis',
-        'love' => 'amour',
-        'life' => 'vie',
-        'death' => 'mort',
-        'world' => 'monde',
-        'adventure' => 'aventure',
-        'adventures' => 'aventures'
-    ];
-
-    $description = str_replace(array_keys($remplacements), array_values($remplacements), $description);
-
-    if (strlen($description) > 180) {
-        $description = substr($description, 0, 180) . '...';
-    }
-
-    return $description !== '' ? 'Resume : ' . $description : '';
-}
-
 function titreAnilist($webtoon)
 {
     return $webtoon['title']['english']
@@ -157,26 +107,29 @@ function titreAnilist($webtoon)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $anilistId = (int)($_POST['anilist_id'] ?? 0);
     $titreAnilist = trim($_POST['titre'] ?? '');
-    $genresAnilist = trim($_POST['genres'] ?? '');
-    $descriptionAnilist = trim($_POST['description'] ?? '');
+    $genresAnilist = traduireGenres(trim($_POST['genres'] ?? ''));
+    $descriptionAnilist = descriptionFrancaise($_POST['description'] ?? '');
     $imageAnilist = trim($_POST['image_url'] ?? '');
 
     if ($anilistId > 0 && $titreAnilist !== '') {
         $reqExiste = $pdo->prepare(
-            "SELECT id FROM webtoons WHERE id_utilisateur = ? AND titre = ? LIMIT 1"
+            "SELECT id FROM webtoons
+             WHERE id_utilisateur = ? AND (anilist_id = ? OR titre = ?)
+             LIMIT 1"
         );
-        $reqExiste->execute([$userId, $titreAnilist]);
+        $reqExiste->execute([$userId, $anilistId, $titreAnilist]);
 
         if ($reqExiste->fetch()) {
             $erreur = "Ce webtoon est deja dans votre bibliotheque.";
         } else {
             $insert = $pdo->prepare(
                 "INSERT INTO webtoons
-                 (id_utilisateur, titre, auteur, genre, description, statut, chapitre_actuel, note, image_url)
-                 VALUES (?, ?, ?, ?, ?, 'a_lire', 0, NULL, ?)"
+                 (id_utilisateur, anilist_id, titre, auteur, genre, description, statut, chapitre_actuel, note, intention, image_url)
+                 VALUES (?, ?, ?, ?, ?, ?, 'a_lire', 0, NULL, 'hesite', ?)"
             );
             $insert->execute([
                 $userId,
+                $anilistId,
                 $titreAnilist,
                 'AniList',
                 $genresAnilist,
@@ -188,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     } else {
-        $erreur = "Impossible d'ajouter ce webtoon.";
+        $erreur = t('add_error');
     }
 }
 
@@ -209,14 +162,14 @@ foreach ($reqMesWebtoons->fetchAll() as $wt) {
     $mesTitres[strtolower($wt['titre'])] = true;
 }
 
-$titre_page = "Rechercher";
+$titre_page = t('search');
 include 'includes/header.php';
 ?>
 
 <div class="bloc-recherche">
     <div class="entete-recherche">
-        <h1 class="page-titre">Rechercher un webtoon</h1>
-        <button type="button" class="btn-filtres" onclick="toggleFiltres()">Filtres</button>
+        <h1 class="page-titre"><?= htmlspecialchars(t('search')) ?></h1>
+        <button type="button" class="btn-filtres" onclick="toggleFiltres()"><?= htmlspecialchars(t('filters')) ?></button>
     </div>
 
     <form class="search-form-anilist" method="GET" action="rechercher.php">
@@ -227,37 +180,37 @@ include 'includes/header.php';
             <input class="search-input-modern"
                    type="text"
                    name="q"
-                   placeholder="Rechercher un webtoon, un auteur ou un genre..."
+                   placeholder="<?= htmlspecialchars(t('search_placeholder')) ?>"
                    value="<?= htmlspecialchars($recherche) ?>">
-            <button class="search-button-modern" type="submit">Rechercher</button>
+            <button class="search-button-modern" type="submit"><?= htmlspecialchars(t('search')) ?></button>
             <?php if ($recherche !== ''): ?>
-                <a href="rechercher.php" class="search-reset">Tout afficher</a>
+                <a href="rechercher.php" class="search-reset"><?= langueCourante() === 'fr' ? 'RÃ©initialiser' : 'Reset' ?></a>
             <?php endif; ?>
         </div>
 
         <div id="zone-filtres" class="zone-filtres <?= ($genreFiltre !== '' || $tri !== 'popularite') ? 'ouverte' : '' ?>">
             <div class="groupe-filtre">
-                <label for="genre">Genre</label>
+                <label for="genre"><?= htmlspecialchars(t('genre')) ?></label>
                 <select id="genre" name="genre">
-                    <option value="">Tous les genres</option>
+                    <option value=""><?= htmlspecialchars(t('all_genres')) ?></option>
                     <?php foreach ($genresValides as $genre): ?>
                         <option value="<?= htmlspecialchars($genre) ?>" <?= $genreFiltre === $genre ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($genre) ?>
+                            <?= htmlspecialchars(labelCategorieAdmin($pdo, $genre)) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="groupe-filtre">
-                <label for="sort">Trier par</label>
+                <label for="sort"><?= htmlspecialchars(t('sort_by')) ?></label>
                 <select id="sort" name="sort">
-                    <option value="popularite" <?= $tri === 'popularite' ? 'selected' : '' ?>>Popularite</option>
-                    <option value="note" <?= $tri === 'note' ? 'selected' : '' ?>>Note</option>
-                    <option value="recent" <?= $tri === 'recent' ? 'selected' : '' ?>>Recent</option>
+                    <option value="popularite" <?= $tri === 'popularite' ? 'selected' : '' ?>><?= htmlspecialchars(t('popularity')) ?></option>
+                    <option value="note" <?= $tri === 'note' ? 'selected' : '' ?>><?= htmlspecialchars(t('score')) ?></option>
+                    <option value="recent" <?= $tri === 'recent' ? 'selected' : '' ?>><?= htmlspecialchars(t('recent')) ?></option>
                 </select>
             </div>
 
-            <button class="btn-appliquer-filtres" type="submit">Appliquer</button>
+            <button class="btn-appliquer-filtres" type="submit"><?= htmlspecialchars(t('apply')) ?></button>
         </div>
     </form>
 </div>
@@ -277,15 +230,15 @@ include 'includes/header.php';
 <?php if (empty($resultatsAnilist)): ?>
     <div class="message-vide">
         <img src="<?= $base ?>/assets/img/icon-empty.svg" alt="" class="icone-vide-svg">
-        <p><?= $recherche !== '' ? 'Aucun resultat AniList pour cette recherche.' : 'Recherchez un webtoon, un manhwa ou un manga pour commencer.' ?></p>
+        <p><?= $recherche !== '' ? htmlspecialchars(t('no_result')) : htmlspecialchars(t('search_start')) ?></p>
     </div>
 <?php else: ?>
     <div class="grille-webtoons">
         <?php foreach ($resultatsAnilist as $wt): ?>
             <?php
                 $titreCarte = titreAnilist($wt);
-                $description = nettoyerDescription($wt['description'] ?? '');
-                $genres = implode(', ', $wt['genres'] ?? []);
+                $description = descriptionFrancaise($wt['description'] ?? '', 180);
+                $genres = traduireGenres($wt['genres'] ?? []);
                 $image = $wt['coverImage']['large'] ?? '';
                 $dejaAjoute = isset($mesTitres[strtolower($titreCarte)]);
             ?>
@@ -317,7 +270,7 @@ include 'includes/header.php';
 
                 <div class="carte-webtoon-actions">
                     <?php if ($dejaAjoute): ?>
-                        <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled>Deja ajoute</button>
+                        <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled><?= htmlspecialchars(t('already_added')) ?></button>
                     <?php else: ?>
                         <form method="POST" action="rechercher.php">
                             <input type="hidden" name="anilist_id" value="<?= (int)$wt['id'] ?>">
@@ -325,10 +278,10 @@ include 'includes/header.php';
                             <input type="hidden" name="genres" value="<?= htmlspecialchars($genres) ?>">
                             <input type="hidden" name="description" value="<?= htmlspecialchars($description) ?>">
                             <input type="hidden" name="image_url" value="<?= htmlspecialchars($image) ?>">
-                            <button type="submit" class="btn btn-vert btn-carte">Ajouter</button>
+                            <button type="submit" class="btn btn-vert btn-carte"><?= htmlspecialchars(t('add')) ?></button>
                         </form>
                     <?php endif; ?>
-                    <a href="detail_webtoon.php?id=<?= (int)$wt['id'] ?>" class="btn btn-gris btn-carte">Voir details</a>
+                    <a href="detail_webtoon.php?id=<?= (int)$wt['id'] ?>" class="btn btn-gris btn-carte"><?= htmlspecialchars(t('details')) ?></a>
                 </div>
             </div>
         <?php endforeach; ?>

@@ -5,6 +5,7 @@
 
 session_start();
 include 'includes/config.php';
+include 'includes/lang.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['mot_de_passe'] ?? '';
 
     if (empty($email) || empty($pseudo) || empty($password)) {
-        $erreur = "Tous les champs sont obligatoires.";
+        $erreur = t('required_fields');
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $erreur = "L'adresse email n'est pas valide.";
     } elseif (strlen($pseudo) < 3 || strlen($pseudo) > 50) {
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $motDePasseHash = password_hash($password, PASSWORD_DEFAULT);
 
             $insert = $pdo->prepare(
-                "INSERT INTO utilisateurs (email, pseudo, mot_de_passe) VALUES (?, ?, ?)"
+                "INSERT INTO utilisateurs (email, pseudo, mot_de_passe, langue) VALUES (?, ?, ?, 'en')"
             );
             $insert->execute([$email, $pseudo, $motDePasseHash]);
 
@@ -46,12 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$titre_page = "Inscription";
+$titre_page = t('register');
 include 'includes/header.php';
 ?>
 
 <div class="carte-formulaire">
-    <h1>Creer un compte</h1>
+    <h1><?= htmlspecialchars(t('create_account')) ?></h1>
 
     <?php if ($erreur): ?>
         <div class="alerte alerte-erreur"><?= htmlspecialchars($erreur) ?></div>
@@ -63,7 +64,7 @@ include 'includes/header.php';
 
     <form method="POST" action="inscription.php">
         <div class="groupe-champ">
-            <label for="email">Adresse email</label>
+            <label for="email"><?= htmlspecialchars(t('email')) ?></label>
             <input type="email" id="email" name="email"
                    placeholder="exemple@mail.com"
                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
@@ -71,7 +72,7 @@ include 'includes/header.php';
         </div>
 
         <div class="groupe-champ">
-            <label for="pseudo">Pseudo</label>
+            <label for="pseudo"><?= htmlspecialchars(t('pseudo')) ?></label>
             <input type="text" id="pseudo" name="pseudo"
                    placeholder="VotreNom123"
                    value="<?= htmlspecialchars($_POST['pseudo'] ?? '') ?>"
@@ -79,17 +80,17 @@ include 'includes/header.php';
         </div>
 
         <div class="groupe-champ">
-            <label for="mot_de_passe">Mot de passe <small>(min. 6 caracteres)</small></label>
+            <label for="mot_de_passe"><?= htmlspecialchars(t('password')) ?> <small>(min. 6)</small></label>
             <input type="password" id="mot_de_passe" name="mot_de_passe"
                    placeholder="********"
                    required>
         </div>
 
-        <button type="submit" class="btn btn-vert btn-bloc">Creer mon compte</button>
+        <button type="submit" class="btn btn-vert btn-bloc"><?= htmlspecialchars(t('create_account')) ?></button>
     </form>
 
     <p class="lien-formulaire">
-        Deja un compte ? <a href="connexion.php">Se connecter</a>
+        <?= langueCourante() === 'fr' ? 'Déjà un compte ?' : 'Already have an account?' ?> <a href="connexion.php"><?= htmlspecialchars(t('login')) ?></a>
     </p>
 </div>
 

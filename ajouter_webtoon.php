@@ -1,42 +1,37 @@
 <?php
 // =============================================
-// ajouter_webtoon.php — Formulaire d'ajout
+// ajouter_webtoon.php - Formulaire d'ajout manuel
 // =============================================
 
 session_start();
 include 'includes/config.php';
+include 'includes/traductions.php';
 
-// Protection de la page
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
     exit;
 }
 
 $erreur = '';
-$succes = '';
 
-// ===== TRAITEMENT DU FORMULAIRE =====
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // On récupère toutes les données du formulaire
-    $titre     = trim($_POST['titre'] ?? '');
-    $auteur    = trim($_POST['auteur'] ?? '');
-    $genre     = trim($_POST['genre'] ?? '');
-    $desc      = trim($_POST['description'] ?? '');
-    // On valide que le statut est bien une des 3 valeurs autorisées
-    $statutsValides = ['a_lire', 'en_cours', 'termine'];
+    $titre = trim($_POST['titre'] ?? '');
+    $auteur = trim($_POST['auteur'] ?? '');
+    $genre = traduireGenres(trim($_POST['genre'] ?? ''));
+    $desc = descriptionSelonLangue($_POST['description'] ?? '');
+    $statutsValides = ['a_lire', 'en_cours', 'en_pause', 'termine', 'abandonne'];
     $statut = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
-    $chapitre  = (int)($_POST['chapitre_actuel'] ?? 0);
-    $note      = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
-    // Sécurité : on s'assure que la note est bien entre 0 et 10
-    if ($note !== null && ($note < 0 || $note > 10)) $note = null;
-    $imageUrl  = trim($_POST['image_url'] ?? '');
+    $chapitre = max(0, (int)($_POST['chapitre_actuel'] ?? 0));
+    $note = ($_POST['note'] ?? '') !== '' ? (int)$_POST['note'] : null;
+    $imageUrl = trim($_POST['image_url'] ?? '');
 
-    // Vérification : le titre est obligatoire
-    if (empty($titre)) {
-        $erreur = "Le titre est obligatoire.";
+    if ($note !== null && ($note < 0 || $note > 10)) {
+        $note = null;
+    }
+
+    if ($titre === '') {
+        $erreur = t('required_title');
     } else {
-        // On insère le webtoon dans la base
         $requete = $pdo->prepare(
             "INSERT INTO webtoons
              (id_utilisateur, titre, auteur, genre, description, statut, chapitre_actuel, note, image_url)
@@ -44,85 +39,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $requete->execute([
             $_SESSION['user_id'],
-            $titre, $auteur, $genre, $desc,
-            $statut, $chapitre, $note, $imageUrl
+            $titre,
+            $auteur,
+            $genre,
+            $desc,
+            $statut,
+            $chapitre,
+            $note,
+            $imageUrl
         ]);
 
-        // On redirige vers la liste après l'ajout
         header('Location: webtoons.php?ajout=ok');
         exit;
     }
 }
 
-$titre_page = "Ajouter un webtoon";
+$titre_page = t('add_webtoon');
 include 'includes/header.php';
 ?>
 
 <div class="carte-formulaire-large">
-    <h1>Ajouter un webtoon</h1>
+    <h1><?= htmlspecialchars(t('add_webtoon')) ?></h1>
+    <p class="texte-page"><?= htmlspecialchars(t('manual_add_warning')) ?></p>
 
     <?php if ($erreur): ?>
         <div class="alerte alerte-erreur"><?= htmlspecialchars($erreur) ?></div>
     <?php endif; ?>
 
     <form method="POST" action="ajouter_webtoon.php">
-
-        <!-- Titre (obligatoire) -->
         <div class="groupe-champ">
-            <label for="titre">Titre <span style="color:red">*</span></label>
+            <label for="titre"><?= htmlspecialchars(t('title')) ?> <span style="color:red">*</span></label>
             <input type="text" id="titre" name="titre"
-                   placeholder="Ex : Solo Leveling"
+                   placeholder="Solo Leveling"
                    value="<?= htmlspecialchars($_POST['titre'] ?? '') ?>"
                    required>
         </div>
 
-        <!-- Auteur et Genre côte à côte -->
         <div class="grille-2-colonnes">
             <div class="groupe-champ">
-                <label for="auteur">Auteur</label>
+                <label for="auteur"><?= htmlspecialchars(t('author')) ?></label>
                 <input type="text" id="auteur" name="auteur"
-                       placeholder="Ex : Chugong"
+                       placeholder="Chugong"
                        value="<?= htmlspecialchars($_POST['auteur'] ?? '') ?>">
             </div>
 
             <div class="groupe-champ">
-                <label for="genre">Genre</label>
+                <label for="genre"><?= htmlspecialchars(t('genre')) ?></label>
                 <input type="text" id="genre" name="genre"
-                       placeholder="Ex : Action, Fantasy"
+                       placeholder="Action, Fantasy"
                        value="<?= htmlspecialchars($_POST['genre'] ?? '') ?>">
             </div>
         </div>
 
-        <!-- Description -->
         <div class="groupe-champ">
-            <label for="description">Description</label>
+            <label for="description"><?= htmlspecialchars(t('description')) ?></label>
             <textarea id="description" name="description"
-                      placeholder="Résumé de l'histoire..."><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
+                      placeholder="<?= htmlspecialchars(langueCourante() === 'fr' ? "Resume de l'histoire..." : 'Story summary...') ?>"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
         </div>
 
-        <!-- Statut et Chapitre côte à côte -->
         <div class="grille-2-colonnes">
             <div class="groupe-champ">
-                <label for="statut">Statut de lecture</label>
+                <label for="statut"><?= htmlspecialchars(t('status')) ?></label>
                 <select id="statut" name="statut">
-                    <option value="a_lire"   <?= (($_POST['statut'] ?? '') === 'a_lire')   ? 'selected' : '' ?>>À lire</option>
-                    <option value="en_cours" <?= (($_POST['statut'] ?? '') === 'en_cours') ? 'selected' : '' ?>>En cours</option>
-                    <option value="termine"  <?= (($_POST['statut'] ?? '') === 'termine')  ? 'selected' : '' ?>>Terminé</option>
+                    <option value="a_lire" <?= (($_POST['statut'] ?? '') === 'a_lire') ? 'selected' : '' ?>><?= htmlspecialchars(t('to_read')) ?></option>
+                    <option value="en_cours" <?= (($_POST['statut'] ?? '') === 'en_cours') ? 'selected' : '' ?>><?= htmlspecialchars(t('reading')) ?></option>
+                    <option value="en_pause" <?= (($_POST['statut'] ?? '') === 'en_pause') ? 'selected' : '' ?>><?= htmlspecialchars(t('paused')) ?></option>
+                    <option value="termine" <?= (($_POST['statut'] ?? '') === 'termine') ? 'selected' : '' ?>><?= htmlspecialchars(t('finished')) ?></option>
+                    <option value="abandonne" <?= (($_POST['statut'] ?? '') === 'abandonne') ? 'selected' : '' ?>><?= htmlspecialchars(t('dropped')) ?></option>
                 </select>
             </div>
 
             <div class="groupe-champ">
-                <label for="chapitre_actuel">Chapitre actuel</label>
+                <label for="chapitre_actuel"><?= htmlspecialchars(t('chapter_current')) ?></label>
                 <input type="number" id="chapitre_actuel" name="chapitre_actuel"
                        min="0" value="<?= (int)($_POST['chapitre_actuel'] ?? 0) ?>">
             </div>
         </div>
 
-        <!-- Note -->
         <div class="groupe-champ">
-            <label for="note">Note (0 à 10)</label>
+            <label for="note"><?= htmlspecialchars(t('score')) ?> / 10</label>
             <select id="note" name="note">
-                <option value="">-- Pas encore notée --</option>
+                <option value=""><?= htmlspecialchars(t('not_rated')) ?></option>
                 <?php for ($i = 0; $i <= 10; $i++): ?>
                     <option value="<?= $i ?>"
                         <?= (isset($_POST['note']) && (string)$_POST['note'] === (string)$i) ? 'selected' : '' ?>>
@@ -132,22 +129,19 @@ include 'includes/header.php';
             </select>
         </div>
 
-        <!-- URL de l'image -->
         <div class="groupe-champ">
-            <label for="image_url">URL de l'image (optionnel)</label>
+            <label for="image_url"><?= htmlspecialchars(t('image_url')) ?></label>
             <input type="url" id="image_url" name="image_url"
-                   placeholder="https://exemple.com/image.jpg"
+                   placeholder="https://example.com/image.jpg"
                    value="<?= htmlspecialchars($_POST['image_url'] ?? '') ?>">
-            <!-- Aperçu de l'image (géré par script.js) -->
             <img id="apercu-image"
                  style="display:none; margin-top:0.8rem; border-radius:8px; max-height:200px;"
-                 alt="Aperçu de l'image">
+                 alt="<?= htmlspecialchars(t('image_url')) ?>">
         </div>
 
-        <!-- Boutons -->
         <div style="display:flex; gap:1rem; margin-top:0.5rem;">
-            <button type="submit" class="btn btn-vert">Ajouter le webtoon</button>
-            <a href="webtoons.php" class="btn btn-gris">Annuler</a>
+            <button type="submit" class="btn btn-vert"><?= htmlspecialchars(t('add_webtoon')) ?></button>
+            <a href="webtoons.php" class="btn btn-gris"><?= htmlspecialchars(t('cancel')) ?></a>
         </div>
     </form>
 </div>
