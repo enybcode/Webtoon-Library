@@ -8,6 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 include_once __DIR__ . '/lang.php';
+include_once __DIR__ . '/security.php';
+
+securiserSessionHeaders();
 
 // Calcule le chemin de base du projet pour charger les liens et les assets.
 $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
@@ -18,7 +21,7 @@ $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($titre_page) ? htmlspecialchars($titre_page) . ' - Webtoon-Library' : 'Webtoon-Library' ?></title>
-    <link rel="stylesheet" href="<?= $base ?>/assets/css/style.css?v=7">
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/style.css?v=8">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>

@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/lang.php';
+include 'includes/security.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
@@ -15,6 +16,10 @@ if (isset($_SESSION['user_id'])) {
 $erreur = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $pseudo   = trim($_POST['pseudo'] ?? '');
     $password = $_POST['mot_de_passe'] ?? '';
 
@@ -26,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $utilisateur = $requete->fetch();
 
         if ($utilisateur && password_verify($password, $utilisateur['mot_de_passe'])) {
+            session_regenerate_id(true);
             $_SESSION['user_id'] = $utilisateur['id'];
             $_SESSION['user_pseudo'] = $utilisateur['pseudo'];
             $_SESSION['langue'] = $utilisateur['langue'] ?? 'en';
@@ -51,6 +57,7 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="connexion.php">
+        <?= champCsrf() ?>
         <div class="groupe-champ">
             <label for="pseudo"><?= htmlspecialchars(t('pseudo')) ?></label>
             <input type="text" id="pseudo" name="pseudo"

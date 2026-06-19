@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/lang.php';
+include 'includes/security.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
@@ -16,6 +17,10 @@ $erreur = '';
 $succes = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $email = trim($_POST['email'] ?? '');
     $pseudo = trim($_POST['pseudo'] ?? '');
     $password = $_POST['mot_de_passe'] ?? '';
@@ -63,6 +68,7 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="inscription.php">
+        <?= champCsrf() ?>
         <div class="groupe-champ">
             <label for="email"><?= htmlspecialchars(t('email')) ?></label>
             <input type="email" id="email" name="email"

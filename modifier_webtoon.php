@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/traductions.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -34,6 +35,10 @@ $statutsValides = ['a_lire', 'en_cours', 'en_pause', 'termine', 'abandonne'];
 $intentionsValides = ['continuer', 'hesite', 'arreter'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $statut = in_array($_POST['statut'] ?? '', $statutsValides) ? $_POST['statut'] : 'a_lire';
     $intention = in_array($_POST['intention'] ?? '', $intentionsValides) ? $_POST['intention'] : 'hesite';
     $chapitre = max(0, (int)($_POST['chapitre_actuel'] ?? 0));
@@ -94,6 +99,7 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="modifier_webtoon.php?id=<?= (int)$id ?>">
+        <?= champCsrf() ?>
         <div class="grille-2-colonnes">
             <div class="groupe-champ">
                 <label for="statut"><?= htmlspecialchars(t('status')) ?></label>

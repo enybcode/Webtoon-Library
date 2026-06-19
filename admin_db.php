@@ -7,6 +7,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/lang.php';
+include 'includes/security.php';
 
 // ----- Securite de l'espace admin -----
 $tokenFile = '/home/svasco/enzo/admin_token.txt';
@@ -87,6 +88,10 @@ $erreur = '';
 
 // ----- Actions admin -----
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $action = $_POST['action'] ?? '';
 
     if ($action === 'user_update') {
@@ -96,14 +101,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $langue = in_array($_POST['langue'] ?? 'en', ['en', 'fr']) ? $_POST['langue'] : 'en';
         $isAdmin = isset($_POST['is_admin']) ? 1 : 0;
 
-        if ($id > 0 && $pseudo !== '' && $email !== '') {
-            $req = $pdo->prepare(
-                "UPDATE utilisateurs
-                 SET pseudo = ?, email = ?, langue = ?, is_admin = ?
-                 WHERE id = ?"
-            );
-            $req->execute([$pseudo, $email, $langue, $isAdmin, $id]);
-            redirectionAdmin('utilisateurs', 'Profil modifie.');
+        if ($id > 0 && $pseudo !== '' && $email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!empty($_SESSION['user_id']) && $id === (int)$_SESSION['user_id'] && $isAdmin === 0) {
+                $erreur = 'Impossible de retirer ton propre role admin.';
+            } else {
+                $req = $pdo->prepare(
+                    "UPDATE utilisateurs
+                     SET pseudo = ?, email = ?, langue = ?, is_admin = ?
+                     WHERE id = ?"
+                );
+                $req->execute([$pseudo, $email, $langue, $isAdmin, $id]);
+                redirectionAdmin('utilisateurs', 'Profil modifie.');
+            }
         }
     }
 
@@ -266,6 +275,7 @@ $onglets = [
             <?php foreach ($users as $user): ?>
                 <tr>
                     <form method="POST" action="admin_db.php?onglet=utilisateurs">
+                        <?= champCsrf() ?>
                         <td><?= (int)$user['id'] ?><input type="hidden" name="id" value="<?= (int)$user['id'] ?>"></td>
                         <td><input type="text" name="pseudo" value="<?= htmlspecialchars($user['pseudo']) ?>"></td>
                         <td><input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>"></td>
@@ -330,6 +340,7 @@ $onglets = [
             <?php foreach ($categories as $cat): ?>
                 <tr>
                     <form method="POST" action="admin_db.php?onglet=categories">
+                        <?= champCsrf() ?>
                         <td><?= (int)$cat['id'] ?><input type="hidden" name="id" value="<?= (int)$cat['id'] ?>"></td>
                         <td><input type="text" name="nom_anilist" value="<?= htmlspecialchars($cat['nom_anilist']) ?>"></td>
                         <td><input type="text" name="label_fr" value="<?= htmlspecialchars($cat['label_fr']) ?>"></td>
@@ -346,6 +357,7 @@ $onglets = [
             <?php endforeach; ?>
                 <tr>
                     <form method="POST" action="admin_db.php?onglet=categories">
+                        <?= champCsrf() ?>
                         <td>Nouveau</td>
                         <td><input type="text" name="nom_anilist" placeholder="Ex : Action"></td>
                         <td><input type="text" name="label_fr" placeholder="Ex : Action"></td>
@@ -408,6 +420,7 @@ $onglets = [
                 <?php foreach ($lignes as $ligne): ?>
                     <tr>
                         <form method="POST" action="admin_db.php?onglet=base&table=<?= urlencode($tableActive) ?>">
+                            <?= champCsrf() ?>
                             <input type="hidden" name="table" value="<?= htmlspecialchars($tableActive) ?>">
                             <?php foreach ($colonnes as $colonne): ?>
                                 <?php $nom = $colonne['name']; ?>

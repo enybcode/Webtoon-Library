@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/traductions.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -187,6 +188,10 @@ function intentionSuiviFrancais($intention)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $anilistIdPost = (int)($_POST['anilist_id'] ?? 0);
     $titrePost = trim($_POST['titre'] ?? '');
         $genresPost = traduireGenres(trim($_POST['genres'] ?? ''));
@@ -295,6 +300,7 @@ include 'includes/header.php';
                     <a href="modifier_webtoon.php?id=<?= (int)$suiviPerso['id'] ?>" class="btn btn-vert"><?= htmlspecialchars(t('edit_progress')) ?></a>
                 <?php else: ?>
                     <form method="POST" action="detail_webtoon.php?id=<?= (int)$webtoon['id'] ?>">
+                        <?= champCsrf() ?>
                         <input type="hidden" name="anilist_id" value="<?= (int)$webtoon['id'] ?>">
                         <input type="hidden" name="titre" value="<?= htmlspecialchars($titre) ?>">
                         <input type="hidden" name="genres" value="<?= htmlspecialchars($genres) ?>">

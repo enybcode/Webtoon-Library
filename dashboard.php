@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/traductions.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -217,10 +218,16 @@ include 'includes/header.php';
                         </a>
                     </div>
 
-                    <a href="#" class="btn-supprimer btn-carte card-action-full"
-                       onclick="return confirmerSuppression('supprimer_webtoon.php?id=<?= (int)$wt['id'] ?>')">
-                       <?= htmlspecialchars(t('delete')) ?>
-                    </a>
+                    <form method="POST"
+                          action="supprimer_webtoon.php"
+                          class="form-suppression-card"
+                          onsubmit="return confirm('<?= htmlspecialchars(langueCourante() === 'fr' ? 'Supprimer cette oeuvre ?' : 'Delete this work?') ?>')">
+                        <?= champCsrf() ?>
+                        <input type="hidden" name="id" value="<?= (int)$wt['id'] ?>">
+                        <button type="submit" class="btn-supprimer btn-carte card-action-full">
+                            <?= htmlspecialchars(t('delete')) ?>
+                        </button>
+                    </form>
 
                     <?php if (empty($wt['anilist_id'])): ?>
                         <small class="details-note">

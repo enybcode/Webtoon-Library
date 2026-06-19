@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/traductions.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -15,6 +16,10 @@ if (!isset($_SESSION['user_id'])) {
 $erreur = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $titre = trim($_POST['titre'] ?? '');
     $auteur = trim($_POST['auteur'] ?? '');
     $genre = traduireGenres(trim($_POST['genre'] ?? ''));
@@ -67,6 +72,7 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <form method="POST" action="ajouter_webtoon.php">
+        <?= champCsrf() ?>
         <div class="groupe-champ">
             <label for="titre"><?= htmlspecialchars(t('title')) ?> <span style="color:red">*</span></label>
             <input type="text" id="titre" name="titre"

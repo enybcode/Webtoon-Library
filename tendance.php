@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/traductions.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -247,6 +248,7 @@ function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
                 <button type="button" class="btn btn-gris btn-carte btn-desactive" disabled><?= htmlspecialchars(t('already_added')) ?></button>
             <?php else: ?>
                 <form method="POST" action="<?= htmlspecialchars($urlRetour) ?>">
+                    <?= champCsrf() ?>
                     <input type="hidden" name="retour" value="<?= htmlspecialchars($urlRetour) ?>">
                     <input type="hidden" name="anilist_id" value="<?= (int)$wt['id'] ?>">
                     <input type="hidden" name="titre" value="<?= htmlspecialchars($titreCarte) ?>">
@@ -263,6 +265,10 @@ function afficherCarteTendance($wt, $mesTitres, $base, $urlRetour)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $anilistId = (int)($_POST['anilist_id'] ?? 0);
     $titreAnilist = trim($_POST['titre'] ?? '');
     $genresAnilist = traduireGenres(trim($_POST['genres'] ?? ''));

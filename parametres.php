@@ -6,6 +6,7 @@
 session_start();
 include 'includes/config.php';
 include 'includes/lang.php';
+include 'includes/security.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php');
@@ -19,6 +20,10 @@ if (!isset($_SESSION['inclure_adulte'])) {
 $succes = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifierCsrf()) {
+        refuserRequeteInvalide();
+    }
+
     $_SESSION['inclure_adulte'] = isset($_POST['inclure_adulte']);
     $langue = in_array($_POST['langue'] ?? 'en', ['en', 'fr']) ? $_POST['langue'] : 'en';
     $_SESSION['langue'] = $langue;
@@ -56,6 +61,7 @@ include 'includes/header.php';
         <p><?= htmlspecialchars(langueCourante() === 'fr' ? "Choisissez la langue d'affichage du site." : 'Choose the display language.') ?></p>
 
         <form method="POST" action="parametres.php" class="form-parametres">
+            <?= champCsrf() ?>
             <div class="groupe-champ">
                 <label for="langue"><?= htmlspecialchars(t('language')) ?></label>
                 <select id="langue" name="langue">

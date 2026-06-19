@@ -1511,6 +1511,18 @@ a {
     text-decoration: none;
 }
 
+.form-suppression-card {
+    display: grid;
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+}
+
+.form-suppression-card button {
+    border: 0;
+    cursor: pointer;
+}
+
 .card-action-full {
     grid-column: 1 / -1;
 }
