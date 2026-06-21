@@ -36,17 +36,6 @@ webtoon-app/
     └── database.sql           → Script SQL pour créer la BDD
 ```
 
----
-
-## Installation (XAMPP / WAMP)
-
-1. Copier le dossier `webtoon-app` dans `htdocs/` (XAMPP) ou `www/` (WAMP)
-2. Ouvrir phpMyAdmin → Créer une base `webtoon_app`
-3. Importer le fichier `database/database.sql`
-4. Vérifier `includes/config.php` : adapter `DB_USER` et `DB_PASS` si besoin
-5. Ouvrir `http://localhost/webtoon-app/`
-
----
 
 ## Fonctionnement général
 
