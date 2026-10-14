@@ -1,0 +1,10 @@
+/data/
+/logs/
+/runtime/
+/.local/
+/.env
+/.env.*
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.log
